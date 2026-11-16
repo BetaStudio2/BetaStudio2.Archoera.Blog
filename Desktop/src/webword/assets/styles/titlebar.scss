@@ -1,0 +1,109 @@
+.titlebar{
+  display:flex;align-items:center;gap:10px;
+  padding:6px 10px 0 10px;
+
+  background:#0d0f12;
+  position:relative;
+}
+.titlebar.borderless-titlebar{
+  border-radius: 8px 8px 0 0;
+}
+.desktop-window.maximized .titlebar.borderless-titlebar{
+  border-radius: 0;
+}
+.title-left{display:flex;align-items:center;gap:8px;min-width:220px}
+.logo{
+  width:16px;height:16px;border-radius:3px;
+  display:grid;place-items:center;
+  background:#2e8fff;color:#fff;font-size:10px;font-weight:700;
+}
+.doc-title{font-weight:600;font-size:13px;opacity:.95}
+.search-wrap{
+  position:absolute;
+  top:58%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  display:flex;
+  width:100%;
+  max-width:500px;
+  justify-content:center;
+}
+.titlebar.borderless-titlebar .search-wrap{
+  max-width: min(500px, calc(100% - 420px));
+}
+.search{
+  width:100%;
+  height:28px;
+  border:1px solid #323846;
+  border-radius:6px;
+  background:#161a21;
+  color:#cfd5df;
+  padding:0 10px;
+  outline:none;
+  font-size:13px;
+}
+.search-wrap.search-pulse .search{
+  animation:searchPulse 1.2s ease-out forwards;
+}
+@keyframes searchPulse{
+  0%{border-color:#4a90d9;box-shadow:0 0 0 3px rgba(74,144,217,0.5),0 0 20px rgba(74,144,217,0.4)}
+  60%{border-color:#4a90d9;box-shadow:0 0 0 2px rgba(74,144,217,0.3),0 0 10px rgba(74,144,217,0.2)}
+  100%{border-color:#323846;box-shadow:none}
+}
+
+.window-controls{
+  display:flex;align-items:center;gap:0;margin-left:auto;
+}
+.window-btn{
+  width:46px;height:32px;
+  border:none;
+  background:transparent;
+  color:#c7cfdd;
+  font-size:16px;
+  cursor:pointer;
+  display:grid;place-items:center;
+  transition:background .15s;
+  border-radius: 4px;
+}
+.window-btn:hover{
+  background:#1a2230;
+}
+.window-btn-disabled{
+  opacity:.35;pointer-events:none;cursor:default;
+}
+.close-btn:hover{
+  background:#e81123;
+  color:#fff;
+}
+.btn-icon{display:block;}
+/* 最大化图标：空心方框 */
+.icon-maximize{
+  width:10px;height:10px;
+  border:1.5px solid #c7cfdd;
+  border-radius:1px;
+}
+/* 还原图标：左下实心框 + 右上空心框 */
+.icon-restore{
+  width:10px;height:10px;
+  position:relative;
+}
+.icon-restore::before{
+  content:'';
+  position:absolute;
+  top:0;right:0;
+  width:7px;height:7px;
+  border:1.5px solid #c7cfdd;
+  border-radius:1px;
+}
+.icon-restore::after{
+  content:'';
+  position:absolute;
+  bottom:0;left:0;
+  width:7px;height:7px;
+  border:1.5px solid #c7cfdd;
+  border-radius:1px;
+  background:#0d0f12;
+}
+.maximize-btn:hover .icon-restore::after{
+  background:#1a2230;
+}

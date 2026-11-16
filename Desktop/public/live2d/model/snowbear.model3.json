@@ -1,0 +1,27 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "snowbear.moc3",
+		"Textures": [
+			"snowbear.4096/texture_00.png",
+			"snowbear.4096/texture_01.png"
+		],
+		"Physics": "snowbear.physics3.json",
+		"DisplayInfo": "snowbear.cdi3.json"
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": [
+				"ParamEyeLOpen",
+				"ParamEyeROpen"
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		}
+	]
+}

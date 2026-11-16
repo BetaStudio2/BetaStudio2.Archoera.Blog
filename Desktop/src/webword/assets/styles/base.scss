@@ -1,0 +1,83 @@
+/* 全局隐藏滚动条（保留滚动功能） */
+*{
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+*::-webkit-scrollbar{display:none}
+
+*{box-sizing:border-box}
+html,body,#app{height:100%;margin:0}
+body{
+  font-family:'MiSans','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow:hidden;
+}
+
+.app{
+  height:100%;
+  display:grid;
+  grid-template-rows:30px 40px auto 1fr 28px;
+  overflow:hidden;
+  background:#0d0f12;
+  border-radius: 8px;
+}
+
+.desktop-window.maximized .app{
+  border-radius: 0;
+}
+
+.desktop-window:not(.borderless) .app{
+  border-radius: 0;
+}
+
+.splash-app{
+  background:#0d0f12;
+}
+.splash-app.show{
+  opacity:1;
+}
+
+#appTitlebar{grid-row:1}
+#appTabs{grid-row:2}
+#appRibbon{grid-row:3}
+#main{grid-row:4;overflow:hidden}
+#appStatusbar{grid-row:5}
+
+@media print{
+  html,body{
+    background:#fff;overflow:visible;
+  }
+  .app{
+    display:block;height:auto;overflow:visible;
+  }
+  #appTitlebar,#appTabs,#appRibbon,#appSidebar,#appStatusbar,
+  #appMusicSidebar,.toc-toggle,.sidebar,.titlebar,.tabs,.ribbon,
+  .statusbar,#appModal,#appFileMenu,.file-menu-overlay,
+  .floating-expand,.nav-head{
+    display:none !important;
+  }
+  .main{
+    display:block;overflow:visible;
+  }
+  .workspace{
+    background:#fff;overflow:visible;padding:0;
+  }
+  .paper-wrap{
+    transform:none !important;
+  }
+  .paper{
+    width:auto;min-height:auto;background:#fff;
+    color:#000;box-shadow:none;
+  }
+  .content{
+    padding:0;font-size:12pt;line-height:1.5;
+    color:#000;
+  }
+  .content h1,.content h2,.content h3,.content p,.content li{
+    color:#000;
+  }
+  #splash-screen{
+    display:none !important;
+  }
+}

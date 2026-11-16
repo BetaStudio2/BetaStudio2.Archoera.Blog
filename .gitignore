@@ -1,0 +1,50 @@
+# Node
+# 依赖目录：任意层级都不提交（含 Desktop/node_modules、node_modules/.pnpm）
+node_modules/
+**/node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+
+# Build output
+dist/
+
+# ── 数据目录 ─────────────────────────────
+# 数据库含 password_hash / sessions，绝不提交；文章索引可随时重建，也不需要提交。
+# 文章源文件与素材（data/documents/main）需要随仓库一起提交，供构建使用。
+data/accounts/
+data/addons/
+data/games/
+data/documents/database/
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# 游戏静态数据（随构建发布，供 /data/ 路径服务，必须提交）
+!Desktop/public/data/
+!Desktop/public/data/*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# Large assets (not tracked in git)
+Desktop/applications/WebWord/public/music/
+Desktop/applications/WebWord/public/live2d/
+
+# Secrets
+key.key.txt
+*.key.txt
