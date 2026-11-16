@@ -1,0 +1,95 @@
+.statusbar{
+  border-top:1px solid var(--line);
+  background:#0e1218;
+  color:#b5bfce;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 10px;
+  font-size:12px;
+}
+.statusbar-left{display:flex;align-items:center;gap:6px;min-width:0;flex:1;overflow:hidden}
+.status-right{display:flex;align-items:center;gap:8px}
+
+/* ── Addon 托盘 ───────────────────────────── */
+.addon-tray{
+  display:none;
+  align-items:center;
+  gap:2px;
+  margin-left:8px;
+  padding:0 4px 0 6px;
+  border-left:1px solid #232a34;
+  height:20px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  flex-shrink:1;
+  min-width:0;
+}
+.addon-tray.has-loaded{display:inline-flex}
+
+.addon-tray-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:24px;height:20px;
+  border:none;background:transparent;
+  color:#6b7588;cursor:pointer;
+  border-radius:3px;
+  font-size:11px;
+  transition:color .15s,background .15s;
+  position:relative;
+}
+.addon-tray-btn:hover{
+  color:#c8d0de;background:#1a2230;
+}
+.addon-tray-btn.active{
+  color:#5ea8ff;background:#1a2638;
+}
+.addon-tray-btn.active::after{
+  content:'';position:absolute;bottom:1px;left:4px;right:4px;
+  height:2px;border-radius:1px;background:#5ea8ff;
+}
+.addon-tray-btn svg{
+  width:14px;height:14px;
+}
+.zoom-slider{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100px;
+  height:4px;
+  border-radius:2px;
+  background:#2a3240;
+  outline:none;
+  cursor:pointer;
+}
+.zoom-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:14px;height:14px;
+  border-radius:50%;
+  background:#5ea8ff;
+  border:none;
+  cursor:pointer;
+}
+.zoom-slider::-moz-range-thumb{
+  width:14px;height:14px;
+  border-radius:50%;
+  background:#5ea8ff;
+  border:none;
+  cursor:pointer;
+}
+.zoom-label{min-width:40px;text-align:center}
+.zoom-slider:disabled{opacity:.35;cursor:default}
+
+.status-opening{
+  display:none;align-items:center;gap:6px;
+  margin-right:6px;
+}
+.status-opening.show{display:flex}
+.status-opening-text{font-size:11px;color:#8e98a8;white-space:nowrap}
+.status-opening-bar{
+  width:60px;height:3px;border-radius:2px;
+  background:#2a3240;overflow:hidden;
+}
+.status-opening-fill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,rgba(255,255,255,.4),rgba(255,255,255,.85));
+  border-radius:2px;
+  transition:width 3s cubic-bezier(0.25,0.46,0.45,0.94);
+}

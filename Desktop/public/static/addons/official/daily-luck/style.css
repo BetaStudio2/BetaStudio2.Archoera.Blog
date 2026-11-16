@@ -1,0 +1,139 @@
+.daily-luck-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  padding: 20px;
+}
+
+.daily-luck-card{
+  background: #1a1f2e;
+  border: 1px solid #2a3040;
+  border-radius: 12px;
+  padding: 32px 40px;
+  text-align: center;
+  max-width: 360px;
+  width: 100%;
+}
+
+.daily-luck-score-section{
+  margin-bottom: 20px;
+}
+
+.daily-luck-score{
+  font-size: 72px;
+  font-weight: 700;
+  color: #e4e8f1;
+  line-height: 1;
+  margin-bottom: 8px;
+  transition: color 0.5s;
+}
+
+.daily-luck-score.level-great{ color: #22c55e; }
+.daily-luck-score.level-good{ color: #5ea8ff; }
+.daily-luck-score.level-normal{ color: #f59e0b; }
+.daily-luck-score.level-bad{ color: #ef4444; }
+.daily-luck-score.level-worst{ color: #dc2626; }
+.daily-luck-score.level-max{ color: #facc15; }
+.daily-luck-score.level-doom{ color: #a855f7; }
+.daily-luck-score.level-tamper{ color: #ff6b6b; animation: dailyLuckTamperFlash 0.5s ease 3; font-size: 56px; }
+
+@keyframes dailyLuckTamperFlash{
+  0%,100%{ opacity: 1; }
+  50%{ opacity: 0.3; }
+}
+
+.daily-luck-label{
+  font-size: 14px;
+  color: #8a95a8;
+  font-weight: 500;
+}
+
+.daily-luck-bar-section{
+  margin-bottom: 16px;
+}
+
+.daily-luck-bar-bg{
+  height: 6px;
+  background: #2a3040;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.daily-luck-bar-fill{
+  height: 100%;
+  width: 0%;
+  border-radius: 3px;
+  transition: width 1s ease-out, background 0.5s;
+  background: #5ea8ff;
+}
+
+.daily-luck-bar-fill.level-great{ background: #22c55e; }
+.daily-luck-bar-fill.level-good{ background: #5ea8ff; }
+.daily-luck-bar-fill.level-normal{ background: #f59e0b; }
+.daily-luck-bar-fill.level-bad{ background: #ef4444; }
+.daily-luck-bar-fill.level-worst{ background: #dc2626; }
+.daily-luck-bar-fill.level-max{ background: #facc15; }
+.daily-luck-bar-fill.level-doom{ background: #a855f7; }
+.daily-luck-bar-fill.level-tamper{ background: #ff6b6b; }
+
+.daily-luck-detail{
+  font-size: 13px;
+  color: #6a7588;
+  margin-bottom: 20px;
+  min-height: 20px;
+  font-weight: 500;
+}
+
+.daily-luck-btn{
+  background: transparent;
+  color: #5ea8ff;
+  border: 1px solid #5ea8ff;
+  border-radius: 6px;
+  padding: 8px 24px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.daily-luck-btn:hover{
+  background: rgba(255,255,255,0.06);
+}
+
+.daily-luck-btn:active{
+  transform: scale(0.97);
+}
+
+.daily-luck-btn.checked{
+  color: #6a7588;
+  border-color: #6a7588;
+  cursor: default;
+}
+
+.daily-luck-btn.checked:hover{
+  background: transparent;
+}
+
+.daily-luck-modal{
+  width: 420px !important;
+  max-width: 420px !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+.daily-luck-modal .addon-icon-close{
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E") no-repeat center;
+  background-size: contain;
+}
+
+.daily-luck-disclaimer{
+  font-size: 11px;
+  color: #4a5568;
+  margin-top: 16px;
+  text-align: center;
+  font-weight: 500;
+  user-select: none;
+}

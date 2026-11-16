@@ -1,0 +1,82 @@
+No License — All Rights Reserved
+未授予许可证 —— 保留所有权利
+================================
+
+Copyright (c) 2026 BetaStudio2. All rights reserved.
+版权所有 (c) 2026 BetaStudio2，保留所有权利。
+
+
+中文
+----
+
+本仓库（下称“本仓库”）中的全部内容——包括但不限于源代码、构建脚本、文章
+正文、图片、音频、样式与设计——均由版权持有人保留所有权利。本仓库**没有**
+采用任何开源或开放内容许可证，也不属于公有领域。
+
+在未取得版权持有人事先书面许可的情况下，**不授予**任何人以下权利：
+
+  - 复制、镜像或转载本仓库的全部或部分内容
+  - 修改、改编、翻译或创作衍生作品
+  - 再分发、再许可、出售、出租或以其他方式提供给第三方
+  - 将本仓库的代码或内容用于商业用途
+  - 将文章正文、图片、音频等创作内容用于训练机器学习模型或数据集
+
+浏览本仓库、在 GitHub 上 fork 以提交 Pull Request、或通过官方部署的站点
+阅读文章，不需要额外授权。除此之外的一切使用行为均需获得许可。
+
+本仓库按“现状”提供，不附带任何明示或默示的担保，包括但不限于对适销性、
+特定用途适用性和非侵权性的担保。在任何情况下，版权持有人均不对因使用或
+无法使用本仓库内容而产生的任何索赔、损害或其他责任负责。
+
+如需授权，请通过仓库 Issue 或 GitHub 账号联系版权持有人。
+
+
+English
+-------
+
+All content in this repository — including but not limited to source code,
+build scripts, article text, images, audio, styles, and design — is
+copyrighted and all rights are reserved by the copyright holder. This
+repository is **not** released under any open-source or open-content
+license, and is not in the public domain.
+
+No permission is granted, without prior written consent from the copyright
+holder, to:
+
+  - copy, mirror, or republish this repository in whole or in part
+  - modify, adapt, translate, or create derivative works
+  - redistribute, sublicense, sell, rent, or otherwise make it available
+    to third parties
+  - use the code or content for commercial purposes
+  - use the article text, images, or audio to train machine-learning
+    models or datasets
+
+Viewing this repository, forking it on GitHub to open a pull request, and
+reading articles on the official deployed site do not require additional
+permission. Any other use requires a license.
+
+This repository is provided "as is", without warranty of any kind, express
+or implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose, and noninfringement. In no event shall the
+copyright holder be liable for any claim, damages, or other liability
+arising from, out of, or in connection with the repository or its contents.
+
+For licensing inquiries, please contact the copyright holder via a repository
+issue or the GitHub account.
+
+
+第三方组件 / Third-party components
+----------------------------------
+
+本仓库包含的第三方组件遵循其各自的许可证，不受上述声明约束：
+
+  - `Desktop/public/live2d/` —— Live2D Cubism SDK 与示例模型
+    参见 `Desktop/public/live2d/LICENSE.md` 与 `NOTICE.md`
+  - `Desktop/public/fonts/` —— MiSans 字体
+  - `Desktop/public/addons/` —— WebWord 加载项
+  - `Desktop/public/spellcheck/` —— 拼写检查词库
+  - 其他在文件或目录内另行注明来源与许可的内容
+
+The third-party components bundled in this repository remain under their own
+licenses and are not covered by the statement above. See the license and
+notice files inside the corresponding directories.

@@ -1,0 +1,273 @@
+.addonmgr-overlay{
+  z-index:10000;
+}
+
+.addonmgr-container{
+  display:flex;flex-direction:column;gap:12px;
+}
+
+.addonmgr-search-box{
+  position:relative;
+  display:flex;align-items:center;
+}
+
+.addonmgr-search-icon{
+  position:absolute;left:10px;
+  width:16px;height:16px;
+  color:#6a7588;
+  pointer-events:none;
+}
+
+.addonmgr-search-input{
+  width:100%;height:34px;
+  padding:0 12px 0 34px;
+  background:#0f1218;
+  border:1px solid #2a3140;
+  border-radius:8px;
+  color:#e2e8f2;
+  font-size:13px;
+  outline:none;
+  transition:border-color .15s,background .15s;
+}
+
+.addonmgr-search-input:focus{
+  border-color:#5ea8ff;
+  background:#0a0d12;
+}
+
+.addonmgr-search-input::placeholder{
+  color:#4a5568;
+}
+
+.addonmgr-list{
+  display:flex;flex-direction:column;gap:6px;
+  max-height:420px;
+  overflow-y:auto;
+  padding-right:4px;
+}
+
+.addonmgr-list::-webkit-scrollbar{
+  width:4px;
+}
+
+.addonmgr-list::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+.addonmgr-list::-webkit-scrollbar-thumb{
+  background:#2a3240;
+  border-radius:2px;
+}
+
+.addonmgr-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;
+  background:#1e2632;
+  border:1px solid #2a303b;
+  border-radius:8px;
+  transition:background .15s,border-color .15s;
+}
+
+.addonmgr-item:hover{
+  background:#232b38;
+  border-color:#3a4250;
+}
+
+.addonmgr-item-icon{
+  width:32px;height:32px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:#2a3240;
+  border-radius:6px;
+  color:#98a2b3;
+}
+
+.addonmgr-item-info{
+  flex:1;min-width:0;
+}
+
+.addonmgr-item-name{
+  font-size:13px;font-weight:500;color:#e8edf7;
+  display:flex;align-items:center;gap:6px;
+}
+
+.addonmgr-item-version{
+  font-size:11px;color:#6b7280;
+  background:#252525;
+  padding:1px 6px;
+  border-radius:8px;
+  font-weight:400;
+}
+
+.addonmgr-item-desc{
+  font-size:12px;color:#7d8899;
+  margin-top:2px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.addonmgr-btn{
+  padding:5px 14px;
+  font-size:12px;
+  background:#2a3240;
+  border:1px solid #3a4250;
+  color:#cfd5df;
+  border-radius:6px;
+  cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s;
+  flex-shrink:0;
+}
+
+.addonmgr-btn:hover{
+  background:#344050;
+  border-color:#5ea8ff;
+  color:#fff;
+}
+
+.addonmgr-btn-active{
+  padding:5px 14px;
+  font-size:12px;
+  background:#5ea8ff;
+  border:1px solid #5ea8ff;
+  color:#fff;
+  border-radius:6px;
+  cursor:pointer;
+  transition:background .15s,border-color .15s;
+  flex-shrink:0;
+}
+
+.addonmgr-btn-active:hover{
+  background:#e74c3c;
+  border-color:#e74c3c;
+}
+
+/* 损坏状态：按钮禁用，显示警告色 */
+.addonmgr-btn-corrupt{
+  padding:5px 14px;
+  font-size:12px;
+  background:#3a2020;
+  border:1px solid #5a3030;
+  color:#e67e22;
+  border-radius:6px;
+  cursor:not-allowed;
+  opacity:0.7;
+  flex-shrink:0;
+}
+
+.addonmgr-item-corrupt{
+  opacity:0.6;
+  border-color:#5a3030 !important;
+}
+
+.addonmgr-item-corrupt .addonmgr-item-version{
+  background:#4a2520;
+  color:#e67e22;
+}
+
+.addonmgr-item-corrupt .addonmgr-item-icon{
+  color:#e67e22;
+  background:#3a2020;
+}
+
+/* 超时状态：允许重试，使用警告色（橙黄） */
+.addonmgr-btn-retry{
+  padding:5px 14px;
+  font-size:12px;
+  background:#3a3018;
+  border:1px solid #5a4a1f;
+  color:#f1c40f;
+  border-radius:6px;
+  cursor:pointer;
+  flex-shrink:0;
+}
+.addonmgr-btn-retry:hover{
+  background:#4a3a20;
+}
+
+.addonmgr-item-timeout{
+  opacity:0.75;
+  border-color:#5a4a1f !important;
+}
+.addonmgr-item-timeout .addonmgr-item-version{
+  background:#4a3a18;
+  color:#f1c40f;
+}
+.addonmgr-item-timeout .addonmgr-item-icon{
+  color:#f1c40f;
+  background:#3a3018;
+}
+
+/* 反复超时（3次+）：高概率异常/恶意，使用更强的警告色 */
+.addonmgr-btn-suspicious{
+  padding:5px 14px;
+  font-size:12px;
+  background:#3a1820;
+  border:1px solid #5a2030;
+  color:#e74c3c;
+  border-radius:6px;
+  cursor:pointer;
+  flex-shrink:0;
+}
+.addonmgr-btn-suspicious:hover{
+  background:#4a1a24;
+}
+
+.addonmgr-item-suspicious{
+  opacity:0.65;
+  border-color:#5a2030 !important;
+}
+.addonmgr-item-suspicious .addonmgr-item-version{
+  background:#4a1820;
+  color:#e74c3c;
+}
+.addonmgr-item-suspicious .addonmgr-item-icon{
+  color:#e74c3c;
+  background:#3a1820;
+}
+
+/* 部分兼容：可加载但部分功能不可用，版本号黄色提示 */
+.addonmgr-item-partial .addonmgr-item-version{
+  background:#4a3a18;
+  color:#f1c40f;
+}
+
+.addonmgr-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;
+  padding:40px 0;
+  color:#6a7588;
+  font-size:13px;
+}
+
+.addonmgr-footer{
+  padding-top:8px;
+  border-top:1px solid #2a303b;
+}
+
+.addonmgr-count{
+  font-size:11px;color:#6a7588;
+}
+
+
+.addonmgr-modal .modal-close{
+  width:28px;
+  height:28px;
+  background:transparent;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  border-radius:6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.addonmgr-modal .addon-icon-close{
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'/%3E%3Cline x1='6' y1='6' x2='18' y2='18'/%3E%3C/svg%3E") no-repeat center;
+  background-size:contain;
+}
+
+@keyframes addonFadeIn{
+  from{ opacity: 0; transform: translateY(10px); }
+  to{ opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "formula-calc",
+  "name": "公式计算器",
+  "version": "v1.0.0",
+  "author": "WebWord",
+  "description": "科学计算器 + 23 个物理公式模板",
+  "icon": "<rect x=\"3\" y=\"2\" width=\"10\" height=\"12\" rx=\"1\"/><path d=\"M6 5h4\"/><path d=\"M6 8h4\"/><path d=\"M6 11h2\"/>",
+  "files": ["addon.js", "style.css", "template.js"],
+  "enabled": true
+}

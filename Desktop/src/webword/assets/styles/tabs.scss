@@ -1,0 +1,37 @@
+.tabs{
+  display:flex;align-items:center;gap:16px;
+  padding:0 12px;
+  background:#0f1216;
+  border-bottom:1px solid var(--line);
+  font-size:14px;
+  user-select:none;
+}
+.tab{
+  color:#cfd6e2;
+  position:relative;
+  cursor:default;
+  line-height:40px;
+}
+.tab::after{
+  content:"";
+  position:absolute;left:50%;right:50%;bottom:0;height:2px;
+  background:#5ea8ff;border-radius:10px;
+  transition:left 0.3s cubic-bezier(0.4,0,0.2,1),right 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.tab.active{font-weight:600;color:#fff}
+.tab.active::after{
+  left:0;right:0;
+}
+.tab.clickable{
+  cursor:pointer;
+}
+.tab.clickable:hover{
+  color:#fff;
+}
+
+/* 工具栏切换按钮（位于 tab 栏右下角） */
+.tabs .ribbon-toggle-btn{
+  margin-left:auto;
+  align-self:flex-end;
+  margin-bottom:2px;
+}
