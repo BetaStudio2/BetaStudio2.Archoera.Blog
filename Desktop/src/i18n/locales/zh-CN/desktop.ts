@@ -9,7 +9,7 @@ export default {
   // 桌面应用
   'desktop.app.perfcounter': '性能计数器',
   'desktop.app.perfcounter.desc': '性能监视器',
-  'desktop.app.blog': '博客',
+  'desktop.app.blog': '小栈',
   'desktop.app.blog.desc': '浏览文章',
   'desktop.app.explorer': '资源管理器',
   'desktop.app.explorer.desc': '浏览文件与程序',

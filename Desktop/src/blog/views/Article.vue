@@ -433,12 +433,15 @@ onUnmounted(() => {
   display: flex;
   gap: 48px;
   padding-top: 40px;
+  /* 正文 + 目录整体在页面中居中，避免右侧留白 */
+  justify-content: center;
 }
 
 .article-body {
   flex: 1;
   min-width: 0;
-  max-width: 720px;
+  /* 加宽正文列：过窄会把长文拉得很长 */
+  max-width: 880px;
   animation: article-fade .5s ease both;
 }
 

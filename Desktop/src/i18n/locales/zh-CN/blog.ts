@@ -8,7 +8,7 @@ export default {
   'blog.navCategories': '分类',
 
   // ── 首页（Home.vue）──
-  'blog.homeTitle': 'BetaStudio2 的博客',
+  'blog.homeTitle': 'BetaStudio2 的小栈',
   'blog.homeSubtitle': '记录技术、生活与思考。偶尔更新，常在折腾。',
   'blog.articleCount': '{count} 篇文章',
   'blog.categoryCount': '{count} 个分类',

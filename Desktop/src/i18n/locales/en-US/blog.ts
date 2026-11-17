@@ -8,7 +8,7 @@ export default {
   'blog.navCategories': 'Categories',
 
   // ── Home (Home.vue) ──
-  'blog.homeTitle': "BetaStudio2's Blog",
+  'blog.homeTitle': "BetaStudio2's Nook",
   'blog.homeSubtitle': 'Documenting tech, life, and thoughts. Rarely updated, always tinkering.',
   'blog.articleCount': '{count} articles',
   'blog.categoryCount': '{count} categories',
