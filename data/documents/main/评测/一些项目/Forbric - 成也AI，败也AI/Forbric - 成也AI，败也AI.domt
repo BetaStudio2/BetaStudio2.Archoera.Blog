@@ -716,6 +716,10 @@ comments_mode: public
         <p>B 站宣发视频发布，41 万播放，“MC 界秦始皇”的称呼开始扩散。</p>
       </div>
       <div class="fb-tl">
+        <div class="d">2026-10-02</div>
+        <p>#31、#36、#37 等争议工单被锁定；#31 的锁定理由是 “too heated”。</p>
+      </div>
+      <div class="fb-tl">
         <div class="d">2026-10-04</div>
         <p>社区长评 issue #59 发布，随后累积 373 条评论。</p>
       </div>
@@ -855,6 +859,14 @@ comments_mode: public
     <h3>4.5 一个人的维护，三个生态的演化</h3>
     <p>
       仓库二十多万行源码，主要维护者一个人；截至 2026-11-17，264 stars、43 forks、7 个 open issues；issue #59 有 373 条评论，10 月 4 日发布，10 月 5 日被以 not planned 关闭。社区里出现了“移除所有 vibe-coded 代码”的 PR，更多的是梗图和嘲讽。
+    </p>
+    <p>
+      更让社区炸锅的是反馈通道的处理：issue #59 被以 <strong>not planned</strong> 关闭；更早的
+      #31、#36、#37、#15 等争议工单被锁定，其中 #31 的锁定理由直接写着 “too heated”。
+      仓库没有把 Issues 页删掉，而是把创建权限收窄到仅协作者：Issues 标签上挂着锁，
+      悬停提示直接写着 <strong>“Only collaborators can create issues”</strong>。
+      对普通玩家来说，这就是把通道关上了——已有的 open issues 只能看，不能开新的。
+      #59 里那句“把反馈通道关掉是另一回事”，说的就是这种观感。
     </p>
     <p>
       这些不能全部算在作者头上。网络暴力和无脑开团是另一回事，不应该和工程批评混在一起。
