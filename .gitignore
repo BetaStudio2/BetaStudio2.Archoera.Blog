@@ -7,6 +7,8 @@ node_modules/
 
 # Build output
 dist/
+# pnpm export 的产物：CI 构建时从 data/ 重新生成，不随仓库提交
+Desktop/public/static/
 
 # ── 数据目录 ─────────────────────────────
 # 文章源文件与素材（data/documents/main）需要随仓库一起提交，供构建使用。

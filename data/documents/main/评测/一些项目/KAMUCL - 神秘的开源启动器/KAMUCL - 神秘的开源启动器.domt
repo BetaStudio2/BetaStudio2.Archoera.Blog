@@ -1,0 +1,414 @@
+---
+id: kamucl-mysterious-launcher
+title: KAMUCL - 神秘的开源启动器
+subtitle: 它说支持 Linux、跑过 1737 项验证、还有"独立评分"——登录页上写的却是别人的名字
+category: 评测/一些项目
+tags:
+  - Minecraft
+  - KAMUCL
+  - 启动器
+  - 开源
+  - AI编程
+  - Vibe Coding
+  - OAuth
+  - Linux
+author_uuid: a2c9-2c8d-0967-620e
+author: BetaStudio2
+version: v1.0.0
+status: published
+format: domt
+filename: KAMUCL - 神秘的开源启动器.domt
+language: zh-CN
+created: '2026-11-17'
+updated: '2026-11-17'
+published_at: '2026-11-17T00:00:00+08:00'
+description: >-
+  KAMUCL 是一个用 Electron 写的 Minecraft 启动器。本文从仓库体积、自我验收、OAuth 授权、
+  Linux 支持和测试结构五个方面，说明它为什么更像一份"AI 的工作汇报"，而不是一个被人负责的产品。
+summary: >-
+  七百兆的仓库里，99% 是历史验收记录；根目录的 AGENTS.md 只教 AI"怎么发"，不写"不能发什么"；
+  登录用的是别人家的 OAuth Client ID；文档写支持 Linux，却连一个 Linux 包都没发布过。
+  这不是能力问题，是没人负责。
+cover: null
+assets: []
+key_facts:
+  project: KAMUCL
+  repo: YUN-SAN3/KAMUCL
+  version_source: 1.1.23
+  version_release: 1.1.72
+  workspace: 730MB
+  docs_size: 693MB
+  source_size: 17MB
+  screenshots: 10006
+  code_lines: 约 6 万行
+  tests: 1356
+  public_releases: 1
+  platforms_shipped:
+    - Windows x64
+  platforms_claimed:
+    - Windows x64
+    - macOS ARM64
+    - Linux x64/ARM64
+  commits_from_local_bot: 242/263
+  oauth_fixed: '2026-10-14'
+sections:
+  - id: opening
+    title: 开场：劈柴狼被"发现"了
+  - id: size
+    title: 二十兆的代码，七百兆的文档
+  - id: selfcheck
+    title: 它给自己定了很严的验收标准，然后自己给自己打分
+  - id: ability
+    title: 它其实真的会写代码
+  - id: license
+    title: 最讽刺的一段：它对别人的东西小心得近乎偏执
+  - id: oauth
+    title: 借来的身份证
+  - id: linux
+    title: 它说支持 Linux，但 Linux 从来没有过成品
+  - id: agents
+    title: 无用的 AGENTS.md，和那一屋子交接文档
+  - id: tests
+    title: tests/：228 个文件、1356 个用例，和一个 import 252 行的入口
+  - id: closing
+    title: 所以它到底是个什么项目
+  - id: notes
+    title: 核对说明
+references:
+  - title: Microsoft Identity Platform Terms of Use
+    publisher: Microsoft Learn
+    url: https://learn.microsoft.com/en-us/legal/microsoft-identity-platform/terms-of-use
+  - title: Prism Launcher（Client ID 的公开来源）
+    publisher: GitHub
+    url: https://github.com/PrismLauncher/PrismLauncher
+  - title: KAMUCL 源码仓库
+    publisher: GitHub / YUN-SAN3
+    url: https://github.com/YUN-SAN3/KAMUCL
+  - title: KAMUCL v1.1.72 Release
+    publisher: GitHub / YUN-SAN3
+    url: https://github.com/YUN-SAN3/KAMUCL/releases/tag/v1.1.72
+enabled: true
+featured: false
+reading_time_minutes: 12
+word_count_estimate: 6200
+comments_mode: public
+---
+
+<style>
+.kq-hero{
+  margin:0 0 36px;padding:22px 24px 20px;
+  border:1px solid rgba(96,165,250,.18);border-radius:14px;
+  background:
+    radial-gradient(120% 160% at 0% 0%,rgba(96,165,250,.12),transparent 58%),
+    radial-gradient(120% 160% at 100% 100%,rgba(167,139,250,.08),transparent 60%),
+    rgba(255,255,255,.02);
+}
+.kq-hero-label{
+  margin:0 0 12px;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:#60a5fa;
+}
+.kq-stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));
+  gap:10px;margin:0;
+}
+.kq-stat{
+  padding:13px 12px;border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;background:rgba(0,0,0,.18);text-align:center;
+}
+.kq-stat b{display:block;font-size:20px;color:#f0f3f8;letter-spacing:-.5px}
+.kq-stat span{display:block;margin-top:4px;font-size:11.5px;color:#7f8798;line-height:1.5}
+
+.kq-callout{
+  margin:0 0 28px;padding:20px 22px;
+  background:linear-gradient(135deg,rgba(96,165,250,.06),rgba(96,165,250,.02));
+  border:1px solid rgba(96,165,250,.12);
+  border-left:3px solid rgba(96,165,250,.3);
+  border-radius:0 10px 10px 0;
+}
+.kq-callout p{font-size:15px;line-height:1.85;color:#c8d0da;margin:0 0 10px}
+.kq-callout p:last-child{margin-bottom:0}
+.kq-callout .kq-callout-title{
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:#60a5fa;margin:0 0 10px;
+}
+
+.kq-table-wrap{width:100%;overflow-x:auto;margin:14px 0 22px}
+.kq-table{width:100%;min-width:600px;border-collapse:collapse;font-size:13.5px}
+.kq-table th,.kq-table td{
+  border:1px solid rgba(255,255,255,.07);padding:9px 11px;
+  text-align:left;vertical-align:top;line-height:1.7;
+}
+.kq-table th{background:rgba(255,255,255,.04);color:#e2e6ed;font-weight:600;white-space:nowrap}
+.kq-table td{color:#9ca3af}
+.kq-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+.kq-table b{color:#e2e6ed}
+
+.kq-code{
+  margin:16px 0 20px;padding:14px 16px;overflow-x:auto;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+}
+.kq-code code{
+  background:none;padding:0;font-size:13px;line-height:1.7;color:#93c5fd;
+  white-space:pre;
+}
+
+.kq-note{font-size:13px;line-height:1.9;color:#7f8798}
+.kq-note p{margin:0 0 10px}
+.kq-note code{font-size:12.5px}
+</style>
+
+<article class="blog-post" data-title="KAMUCL - 神秘的开源启动器">
+
+  <header class="post-header">
+    <p class="post-meta">
+      <span class="post-date">2026-11-17</span>
+      <span> · </span>
+      <span class="post-category">评测 / 一些项目</span>
+      <span> · </span>
+      <span class="post-author" data-author-uuid="a2c9-2c8d-0967-620e">BetaStudio2</span>
+    </p>
+    <h1 class="post-title">KAMUCL - 神秘的开源启动器</h1>
+    <p class="post-lead">
+      它说自己支持 Linux，跑过 1737 项验证，还有两份"独立评分"。
+      可发布页上只有一个 Windows 的 exe，登录页上写的还是别人的名字。
+      这篇文章不打算骂人，只想把那七百兆里的东西一件件摊开看看。
+    </p>
+  </header>
+
+  <div class="kq-hero">
+    <p class="kq-hero-label">先看几个数字</p>
+    <div class="kq-stats">
+      <div class="kq-stat"><b>730MB</b><span>解压后的工作区，代码只占 17MB</span></div>
+      <div class="kq-stat"><b>693MB</b><span><code>docs/</code> 一个目录的体积</span></div>
+      <div class="kq-stat"><b>8914</b><span>仓库里的 jpg 截图</span></div>
+      <div class="kq-stat"><b>1356</b><span>测试用例，入口只有一个文件</span></div>
+      <div class="kq-stat"><b>1</b><span>公开 Release，附赠一个 exe</span></div>
+    </div>
+  </div>
+
+  <section class="post-section">
+    <div class="kq-callout">
+      <p class="kq-callout-title">宇宙最简单真诚明了免责声明（太长不看版与键盘侠下班版）</p>
+      <p>本文章仅是针对此项目所在的问题以及其对 MC 圈造成的影响等进行客观的说明，所有说明都将基于此仓库，而不是作者个人的主观臆断，因此请不要对作者进行无谓的人身攻击、你急那就是你对。</p>
+      <p>我本人是不反对 Vibe Coding 及 AI 制作内容的，但我反对不经自己思考、代码检查甚至仓库审核，只是一味地向 AI 许愿，自己当甩手掌柜的行为——至少作为一个项目的负责人，应该要对自己的项目有最基本的认识和评判能力，而不是盲目地向 AI 许愿。</p>
+      <p>以及，如你所见，这个 KAMUCL 启动器的仓库（<a href="https://github.com/YUN-SAN3/KAMUCL" target="_blank" rel="noopener">YUN-SAN3/KAMUCL</a>），直接扣掉了 issue，至于什么原因，作者并不知道，也不想知道，但是确实很容易让人遐想就是了……</p>
+    </div>
+
+
+    <h2 id="opening">开场：劈柴狼被"发现"了</h2>
+    <p>那一天，劈柴狼被"发现"了……</p>
+    <p>（如果你不知道事情的原因，请自行 AI 或者 Bing 或者百度或者搜狗都可以，而不是先看这篇文章，或者还没开始看就开始喷）</p>
+    <p>于是，各家的启动器，如雨后春笋般开始发展。而其中比较受到大家瞩目的，应该就是今天文中所指的启动器：KAMUCL，一个看起来简洁美观、功能丰富的启动器……嗯……虽然看起来确实还有不足，但是至少，他是一个完整的启动器……对吧……？</p>
+    <p>确实，一样，和 Forbric 一样，它在 B 站发布了介绍视频，但是相比之下，算不上高调宣发……<br>当然，这不是重点。</p>
+    <p>嗯……看起来……好像是这样，也只是好像……</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="size">一、二十兆的代码，七百兆的文档</h2>
+
+    <p>把源码包解开量了一遍：整个工作区 730MB，其中 <code>src/</code> 只有 17MB。</p>
+    <p>剩下的六百多兆是什么？<code>docs/</code> 一个目录就占了 693MB。里面是一个个 <code>validation-x.y.z/</code>，每个版本一套：验收说明、两份"独立评分"的 JSON、以及塞满截图的 <code>evidence/</code>。光 <code>validation-1.1.17</code> 这一版就有 224MB。整个仓库里躺着 <strong>8914 张 jpg 和 1092 张 png</strong>。</p>
+    <p>如果只是这一件事，还可以解释成"QA 认真"。但同一批文件里还有另外两样东西：</p>
+    <ul>
+      <li>根目录和 <code>docs/</code> 下的 <strong>123 个 markdown</strong>，其中 69 个直接堆在 <code>docs/</code> 根上，每轮任务新增一份，从不合并；</li>
+      <li><code>audit-reports/</code> 另占 12MB 自我审计数据，包括两份 3.6MB 的 <code>SECURITY_SCAN_COVERAGE.json</code>（一份基线一份当前）和一份 2.8MB 的源码清单。</li>
+    </ul>
+    <p>一个仓库的体积，通常等于作者真正在意的产出。这里在意的是——<strong>留下证据</strong>。代码只是它的副产品，证据和审计报告才是主产物。</p>
+    <p>所以与其说这是代码仓库，不如说这是<strong>一个 AI 的工作日志</strong>：记录它每个版本做了什么、验了什么、给自己打了几分。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="selfcheck">二、它给自己定了很严的验收标准，然后自己给自己打分</h2>
+
+    <p><code>CURRENT_STATUS.md</code> 摆在仓库根目录，开头就是一段汇报：Windows 平台 1737 项验证，1736 通过、0 失败、1 项平台跳过；Mac 平台 1737 项，1732 通过、0 失败、5 项平台跳过。</p>
+    <p>同类文件里还躺着 <code>INDEPENDENT_WINDOWS.json</code> 和 <code>INDEPENDENT_MAC.json</code>——"独立评分"。</p>
+    <p>听起来无懈可击。直到你去看提交历史：263 个提交里，<strong>242 个的作者邮箱是 <code>dev@kamucl.local</code></strong>。一个本地假邮箱（可为什么是假邮箱呢……），把自己的验收标准写了、评测跑了、分数打了，然后把文件命名为"独立"。</p>
+    <p>测试也是同一个味道。<code>tests/</code> 下有 228 个测试文件，看着很壮观；但入口只有一个 <code>tests/all.test.ts</code>，它用 <strong>252 行 import</strong> 把全部测试串起来。这意味着你没法只跑一个模块：要么全跑，要么不跑。有测试，但没有"测试策略"。</p>
+    <p>最能说明问题的是 <code>.gitignore</code>。为了忽略日志，它连写了六行规则，其中五行完全被第六行的 <code>*.log</code> 覆盖，中间还夹一个空行；而真正该写的那行——排除 <code>docs/validation-*/evidence/</code> 和图片类型——从头到尾都不存在。</p>
+    <p>清单上写着"要留证据"，但没有一条写着"检查自己写的东西"。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="ability">三、它其实真的会写代码</h2>
+
+    <p>如果只看前面，很容易得出"技术很差"的结论，而这个结论是错的。</p>
+    <p><code>native/</code> 下有四个原生辅助程序：C# 写的 <code>WindowMaterial.cs</code>、<code>GameWindowFocus.cs</code>、<code>StartupFeedback.cs</code>，Swift 写的 <code>MacGameWindow.swift</code>，C++ 写的 <code>LinuxGameWindow.cpp</code>；另有一套 Java 桥接、一个独立编译的离线皮肤 agent，以及一套鸿蒙适配脚本。</p>
+    <p>代码表面也干净得反常：整个 <code>src</code> 里 <strong>0 个 TODO、0 个 FIXME、0 个 <code>console.log</code></strong>，<code>tsconfig.json</code> 开着 <code>strict: true</code>。这比绝大多数人类维护的开源项目都整齐。</p>
+    <p>但把这个"整齐"拆开看，它其实是另一种东西：</p>
+    <ul>
+      <li><code>App.vue</code> 2656 行，<code>GameView.vue</code> 2284 行，<code>SettingsView.vue</code> 1743 行，<code>types.ts</code> 1424 行，<code>ipc.ts</code> 1111 行——所有东西都堆在巨型文件里；</li>
+      <li>数据层是一行两兆的 JSON（<code>projectionRegistries.json</code>，2,093,090 字节，没有换行）；</li>
+      <li>同时它又会为一处细节较真到极致：吉祥物的拍击音效不用音频文件，而是实时合成 75ms 噪声，随机种子写成 <code>0x6b616d75</code>——拆开 ASCII 正好是 <code>k a m u</code>；首页那个默认皮肤也不用图片，是拿几十行 <code>rect()</code> 一个像素一个像素画出来的。</li>
+    </ul>
+    <p>所以三件事并排放着就很清楚了：<strong>过度讲究（音效、皮肤）、完全不讲究（两兆单行 JSON、两千行组件）、以及表面整洁（0 TODO / strict）</strong>。</p>
+    <p>这不是能力问题，是取舍问题。有没有一个人坐在中间说"这个值得，那个不值得"，决定了成品到底是个有灵魂的小工具，还是七百兆的不明物体。而"0 个 TODO 的干净"也说明另一件事——<strong>没有人在这里长期工作过</strong>。真正的工程项目会留下待办、会留下临时日志、会留下想改但没改的东西，那是人的痕迹。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="license">四、最讽刺的一段：它对别人的东西小心得近乎偏执</h2>
+
+    <p>在讲那个最严重的问题之前，必须先说这个反差，否则会误解成"作者不懂开源规矩"。</p>
+    <p>看它的 <code>LICENSE</code>：MIT，但后面跟了一段范围声明——只覆盖 KAMUCL 自己的贡献，并且<strong>"不授予历史授权尚未解决的上游代码的任何权利"</strong>。</p>
+    <p>看它的 <code>docs/CORRESPONDING_SOURCE.md</code>：为了应对 GPL/LGPL 的源码提供义务，它把"对应源码"该包含什么、怎么编译、JDK 版本、SHA256 清单一条条写清楚，连 Electron、FFmpeg、NSIS 插件 7-Zip 的原始源码包都附上了。里面还有一句很诚实的自白:"本说明不追溯确认历史版本授权"。</p>
+    <p>看它的 <code>THIRD_PARTY_NOTICES.md</code>：12KB，把从 VoxLink（LGPL-3.0）移植过来的联机模块逐个文件列明——<code>rudp.ts</code>、<code>punch.ts</code>、<code>session.ts</code>、<code>engine.ts</code>、<code>modsync.ts</code>、<code>tcpPunch.ts</code>、<code>turnTcp.ts</code>、<code>punchPolicy.ts</code>、<code>stdTurn.ts</code>、<code>turnRelay.ts</code>、<code>tickets.ts</code>……几十个文件，连上游的 commit hash 都贴着。</p>
+    <p>也就是说：<strong>这个项目对"别人写的代码"小心到了近乎强迫的程度。</strong></p>
+    <p>然而，它在登录这件事上，直接抄了 Prism Launcher 的 OAuth Client ID。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="oauth">五、借来的身份证</h2>
+
+    <p>现象很简单：在 KAMUCL 里点登录，跳出来的微软授权页上，应用名写着 <strong>Prism Launcher</strong>。</p>
+    <p>原因也不复杂：Prism 是开源的，它的 Azure 应用注册 Client ID（<code>c36a9fb6-4f2a-41ff-90bd-ae7cc92031eb</code>）一直公开在仓库里。KAMUCL 把它原样抄进代码，然后用这个身份走完了整条微软登录链——请求设备码、轮询换 Token、拿 MAT / MRT、接 Xbox Live / XSTS / Minecraft，全程以 Prism Launcher 的名义。</p>
+    <p>结果是双向的：</p>
+    <p><strong>对用户</strong>，他以为自己授权给了一个他信任的开源启动器，实际上签字的对象是另一个名字。这种情况下怀疑自己碰上 Token 小偷，非常合理。</p>
+    <p><strong>对平台</strong>，这不是"擦边"，而是精确对上了《微软开发者身份平台使用条款》里的几条明文（条款号按当前公开版本）：</p>
+
+    <div class="kq-table-wrap">
+      <table class="kq-table">
+        <thead>
+          <tr><th>条款</th><th>条款要求</th><th>KAMUCL 的行为</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>§3.2</b><br>Access Credentials</td>
+            <td>Access Credentials 不可转让、不可分配、必须保密，"You may not share your Access Credentials with anyone else"，并且用这些凭据发生的所有活动由你负责。</td>
+            <td>用的不是自己的注册，是 Prism 的 Application ID 及其背后的应用身份。</td>
+          </tr>
+          <tr>
+            <td><b>§3.1</b><br>Application ID and Display Name</td>
+            <td>Application ID 由 Microsoft 分配、也可能被收回重分配；Display Name 与这份注册绑定，不得冒充他人、不得造成混淆。</td>
+            <td>用一个不属于自己的 Application ID，用户在授权页上看到的就是别人的名字——这里显示的是"Prism Launcher"。</td>
+          </tr>
+          <tr>
+            <td><b>§1.2.11</b></td>
+            <td>不得在用户明确授予的权限之外，请求或提供通过平台获得的数据。</td>
+            <td>用户授权的是 Prism 这个应用，拿走 Token 的是 KAMUCL。</td>
+          </tr>
+          <tr>
+            <td><b>§2.2</b><br>User Data and Privacy</td>
+            <td>"You must not collect or transfer any User's personal information or data in a misleading, illegal, unauthorized or unfair way."</td>
+            <td>在用户不知情的前提下，取得并转移了账号授权数据。</td>
+          </tr>
+          <tr>
+            <td><b>§2.1.3</b><br>Application Requirements</td>
+            <td>应用必须"be free from any malicious, deceptive or unlawful code or program"。</td>
+            <td>以他人的应用身份完成 OAuth，属于欺骗性行为。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>§2 开头那句更是直接回答"谁负责"：<em>As the developer, You are responsible for your Application.</em></p>
+    <p>所以定性很干脆：不是风格问题，也不是工程瑕疵，是<strong>违反平台条款</strong>——而且是用户完全察觉不到的那一类。</p>
+    <p>自己的 Client ID 难申请吗？打开 Azure 门户建一个应用注册，填个回调地址，十几分钟。它省下的不是这十几分钟，而是"去确认一下这是不是别人的东西"这一步——恰恰是它在许可合规上做得最细的那一步。</p>
+    <p>责任也要说清楚：这件事不会被"是 AI 抄的"稀释掉。把包发出去的是开发者，授权页上挂的是这个项目，违反条款的主体也是这个项目——微软的条款约束的是应用，不是模型；责任落在维护者身上。</p>
+    <p><strong>后来修了。</strong>2026 年 10 月 14 日的提交 <code>4187127</code>（<em>fix: use KAMUCL Microsoft identity and secure stored credentials</em>）把默认 ID 换成了自己的 <code>06cc8***-…</code>，现在再去搜那串 Prism 的 ID 已经搜不到了。</p>
+    <p>但修复的时间和方式本身就是结论的一部分：<strong>问题是被别人公开指出之后才修的，至少是在仓库中出现过的</strong>，不是自审时发现的，或者说，知道但是默许了。而在修复之前装过旧版本的用户，他们的授权已经以"Prism Launcher"的名义给出去了——这件事不会因为代码改了就消失。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="linux">六、它说支持 Linux，但 Linux 从来没有过成品</h2>
+
+    <p>解开源码包，除了七百兆的 <code>docs/</code>，还躺着两份特别显眼的文档：<code>docs/LINUX-1.1.11.md</code> 和 <code>docs/RELEASE-1.1.11.md</code>。</p>
+    <p><code>LINUX-1.1.11.md</code> 写得比 Windows 那份还细。它告诉你准备 Node 24、<code>mesa-utils</code>、<code>x11-utils</code>、带 X11 采集能力的 <code>ffmpeg</code>；告诉你 <code>npm run dist:linux</code> 会产出 AppImage、deb、tar.gz 三种包；告诉你装完之后用 <code>sudo apt install ./KAMUCL-1.1.11-linux-x64.deb</code>，再用 <code>sha256sum -c</code> 校验；连凭据都讲清楚了——只接受 GNOME libsecret 或 KWallet，后端是 <code>basic_text</code> 时令牌只保留当次会话。README 里也留了一句"其他平台工程仍在仓库中"。</p>
+    <p>读到这里，任何人都只会得出一个结论：Linux 是被支持的。</p>
+    <p>然后你翻到同一份文档的结论：</p>
+
+    <blockquote class="post-blockquote post-blockquote-highlight">
+      <p>所有评分 null、完整资格 false、无 Release。</p>
+    </blockquote>
+
+    <p>同一页下面还挂着一张"尚须补齐的必测证据"清单，七条——从四种 OS／架构组合的原生构建、干净解压、实际安装与启动，到真实 Minecraft 下载、世界启动、存档、关窗，一条都没打勾。里面有一句写得很直接：<strong>真实桌面 runner 仍未配置</strong>。</p>
+    <p>接着流水线：<code>.github/workflows/linux-build.yml</code> 只能手动触发，文件开头自己写着——"Automatic releases currently target Windows and Mac ARM64 only. Preserve the deferred native Linux workflow for an explicit future request."（自动发布只覆盖 Windows 和 Mac ARM64，Linux 工作流留着以备将来要求。）</p>
+    <p>然后发布门禁 <code>scripts/platform-release-gate.cjs</code>：它硬性要求 Linux 必须具备 Ubuntu 24.04 与 26.04 <strong>两台真实桌面</strong>的原生证据，否则不许发布。</p>
+    <p>最后看 GitHub：整个仓库只有一个 Release、一个附件——Windows 的 exe。没有 Linux 包，连 Mac 包都没有。</p>
+    <p>所以那份文档描述的不是"支持 Linux"，而是"能在 Linux 上编译出安装包"。</p>
+    <p>验证也不是完全没做过，只是没做成。文档记录过一次真实启动：在 Xvfb 里把应用跑起来，结果卡在 ANGLE 与 Mesa llvmpipe 的 WebGL 创建失败上，随后触发 <code>skin canvas missing</code>；而验证器本身拒绝 llvmpipe／SwiftShader 这类软件渲染作为真实桌面证据，真实 GNOME／KDE／XWayland 主机又始终没配上。也就是说，<strong>这个应用到底能不能在 Linux 桌面上启动，到今天都没有答案</strong>。</p>
+    <p>更有意思的是代码的态度：<code>src/shared/platform.ts</code> 里 Linux 被当成正常支持的平台（<code>nativeGameRuntime: 'supported'</code>），更新包名也按 <code>KAMUCL-版本-linux-x64.AppImage</code> 这类格式拼好了。代码相信它支持 Linux，文档承认它没验过，发布页什么都没有。</p>
+    <p>按它自己那套门禁的标准，结论只有一个：<strong>现在这个项目无法支持 Linux</strong>——不是缺一个安装包，是至少缺一次能证明它跑得起来的验收。</p>
+    <p>于是用户按文档操作会得到什么？一条指向从未发布过的文件的 <code>sudo apt install</code>，和一个连作者自己在文档里都标注"评分 null"的候选包。</p>
+    <p>这已经不是"Linux 支持不完善"，而是<strong>把未完成的平台当成已完成的平台写进文档</strong>。对 Windows 用户没有任何影响；对 Linux 用户则是纯误导——他会在终端里花一晚上排查为什么装不上、为什么起不来，而答案就躺在仓库里：从来没有发布过，也没有一次真机验收通过。</p>
+    <p>顺带说，Mac 的待遇也差不多：文档里写着 ARM64 的 DMG 已实际生成、部分验收通过（完整资格同样是 false），公开 Release 里却一个 Mac 包都没有。一个"支持哪些平台"只能靠文档自证的发布页，其实说明不了它在履行什么承诺。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="agents">七、无用的 AGENTS.md，和那一屋子交接文档</h2>
+
+    <p><code>AGENTS.md</code> 是 agent 打开仓库后读的第一个文件。全文 1213 字节，九条规则，概括一下：</p>
+    <ul>
+      <li>每批改完，默认完成验证、打包、发布到 <code>kamubaba-i/KAMUCL</code>，不用再问一次；</li>
+      <li>每版递增版本尾号，99 之后进位；</li>
+      <li>生成 Windows 便携 EXE 和 ZIP，核对 SHA256；</li>
+      <li>推 <code>origin/master</code>，再用 cherry-pick 同步 <code>main</code>；</li>
+      <li>建 GitHub Release，上传 EXE、ZIP、SHA256SUMS；</li>
+      <li>不推 wuhui 分支，不结束别人的游戏进程。</li>
+    </ul>
+    <p>九条里八条在讲"怎么发"，剩下一条在讲"别碰那个分支"。</p>
+    <p>没有一条讲：项目怎么分层、构建前置是什么、测试怎么跑、哪些平台真正验收过、什么情况下不许发、哪些文件不许进仓库。</p>
+    <p>对开发者，它是没用的——真正要查的东西散在 123 个 md 里，得自己翻。对 AI，它更没用——它学到的只有"改完就发"，学不到"改的时候要注意什么"。</p>
+    <p>说得再直白一点：<strong>它把"能发"写清楚了，却一个字没写"不能发什么"。</strong></p>
+    <p>但这不代表那些事就"不算违规"。AGENTS.md 没写，不等于规则不存在：几百兆验收截图塞进仓库、把没验收的 Linux 写成受支持，是工程和诚信上的问题；而"借用"别人的 OAuth Client ID，违反的是《微软开发者身份平台使用条款》——那是明文规则，不是某个项目自己写的说明书。而把包发出去、把 release 建出来的人，始终是开发者本人；给 AI 的规则漏了一条，责任不会跟着漏掉，它只会落回签字的那个人身上。</p>
+    <p>而且它已经过期了：它让人把版本推到 <code>kamubaba-i/KAMUCL</code>（那个地址今天 404），让人推 <code>origin/master</code> 再和 <code>main</code> 做双历史 cherry-pick（仓库现在只有 <code>main</code>），让人建 Release（发布说明里写着"预计不会再在 github 对外发布更新了"）。一份只有 AI 会读的文件，加一整套过期指令，等于没有。</p>
+    <p>再看根目录那一排文件：<code>START_HERE.md</code>、<code>CURRENT_STATUS.md</code>、<code>FEATURE_AUDIT.md</code>、<code>AGENTS.md</code>，以及 <code>docs/HANDOFF.md</code>。它们的气质完全一致——"Last verified state"、构建命令、产物 SHA256、"不是事后补造预构建记录"。这不是写给用户看的文档，这是<strong>写给下一个接手者看的交接单</strong>。</p>
+    <p>而"下一个接手者"，就是下一个 AI。</p>
+    <p>再往外看，这个仓库还兼着另一个角色：<strong>验收档案室</strong>。</p>
+    <ul>
+      <li><code>docs/validation-*</code>：18 个目录、371 个 JSON，占掉了整个 <code>docs/</code> 的绝大部分；</li>
+      <li><code>docs/</code> 整体：10543 个文件、693MB；</li>
+      <li><code>docs/RELEASE-*.md</code>：33 份按版本号排列的发布验证记录；</li>
+      <li><code>docs/</code> 根层 69 个 md：<code>FEATURES_1.1.6.md</code> 到 <code>FEATURES_1.1.9.md</code> 各一份，还有一堆 <code>*_VERIFICATION.md</code>、<code>*_AUDIT.md</code>、<code>HANDOFF.md</code>；</li>
+      <li><code>audit-reports/</code>：12MB 自我审计数据。</li>
+    </ul>
+    <p>发布验证文档天然属于"某一次发布"，跟 Release 附件走、或者进 CI artifact 就完了。把它们按版本堆进 Git，后果很具体：clone 一次源码要下几百兆，99% 是历史验收；任何一次 code review 都被这些文件稀释；最要紧的是——<strong>验证变成了可以堆出来的东西</strong>，堆得越多越像可靠，但没人读，也拦不住下一次不该发的发布。Linux 就是活例子：文档自己写着"评分 null"，安装说明照写。</p>
+    <p>把这条链和前面的数据放在一起，很多事就不用解释了：242 个提交来自同一个本地邮箱，上万张验证截图躺在仓库里，AI 被授权"改完自己验、验完自己打包、打包完自己发"。它解释了为什么会出现七百兆的仓库，也解释了为什么会在一个连 7-Zip 源码都要附上的项目里，抄一个别人的 OAuth 身份。</p>
+    <p>我不觉得用 AI 写代码有问题，我自己也在用。但<strong>"发布"这个动作没法外包</strong>：仓库是你的，发布按钮是你的，出事被追责的也是你。让 AI 全自动发布，本质上是把一个必须有人负责的环节，交给一个不会负责的东西。</p>
+    <p>顺带一提，仓库把 issue 关了、现在一个都看不了——这件事也是同一套逻辑的延伸：需要人回应的环节，最简单的处理方式就是关掉它。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="tests">八、tests/：228 个文件、1356 个用例，和一个 import 252 行的入口</h2>
+
+    <p>数字看着很唬人：228 个测试文件、24194 行、1356 个用例。拆开一看，它记录的是"时间"，不是"行为"。</p>
+    <p>147 个文件名里带版本号或批次号——<code>community-116</code>、<code>community-117</code>、<code>community-120</code>、<code>community-121</code>、<code>microsoft-identity122</code>、<code>mascot-117</code>、<code>mac-parity-111</code>……每做一版就新增一个，从不合并，也不删。读这些测试的人不会知道"这个功能现在应该是什么行为"，只会知道它在哪几个版本被验过。</p>
+    <p>形式也乱：28 个 <code>.cjs</code> 混在 <code>.ts</code> 里，另外还有 9 个 java、1 个 jar、1 个 cs 塞在测试目录里当夹具。入口只有一个 <code>tests/all.test.ts</code>，252 行 import 把全部测试串死——想跑一个模块，只能全跑。</p>
+    <p>更要紧的是内容。130 个测试文件在读源码文本，205 处断言是"读文件加正则匹配"，比如：</p>
+
+    <pre class="kq-code"><code>assert.match(fs.readFileSync('src/main/ipc.ts', 'utf8'), /multiSelections/)</code></pre>
+
+    <p>这测的不是行为，是"源码里有没有这句话"。改个变量名、换个写法、重新格式化，它立刻变红；真正的逻辑错误，它一个也抓不到。它唯一稳定的作用，是让用例数看起来很多。</p>
+    <p>所以"1356 个用例"的真相是：一个 2.4 万行、不可筛选、以文本匹配为主的大文件集。这不是"测试写得多"，是<strong>把测试当成了给评审看的证据</strong>——和 <code>docs/</code> 里那 8914 张截图，是同一种东西。</p>
+  </section>
+
+  <section class="post-section">
+    <h2 id="closing">九、所以它到底是个什么项目</h2>
+
+    <p>平心而论，KAMUCL 能跑，界面不难看，跨平台的原生辅助程序是真的写了，有些小地方甚至能看出心思。</p>
+    <p>但它不是一个"被人负责的产品"，更像一份"AI 的工作汇报"：内容详实、自我评价很高、格式一丝不苟、连审计报告都自带，只是没人校对。一个只写"怎么发"的 AGENTS.md、一堆把验证当交付物的文档、一套按版本号堆起来的测试，拼在一起恰好就是完整的一份自我证明——过程很努力，结论没人看。最要紧的一条是，它在文档里把 Linux 写成了受支持的平台，却连一个 Linux 包都没发布过——而这件事，恰恰不是"没人校对"，是没人负责。</p>
+    <p>最后回到开头那句自问自答——它"至少是一个完整的启动器，对吧"。</p>
+    <p>是完整的。完整到连它自己都不知道这个启动器，是个"起爆器"……</p>
+  </section>
+
+  <section class="post-section">
+    <hr class="post-divider" />
+    <h2 id="notes">附：核对说明</h2>
+
+    <div class="kq-note">
+      <p>数据于 2026-11-17 核对。源码部分基于本地源码包（<code>KAMUCL-main</code>，<code>package.json</code> 版本 1.1.23，状态文件日期 2026-10-14）：工作区 730MB、<code>docs/</code> 693MB、<code>src/</code> 17MB；8914 张 jpg + 1092 张 png；<code>docs/</code> 下 10543 个文件、123 个 md（69 个在根层）、18 个 <code>validation-*</code> 目录、371 个 JSON、33 份 <code>RELEASE-*.md</code>；<code>audit-reports/</code> 12MB；<code>src</code> 506 个文件、约 6 万行。</p>
+      <p>测试（同一源码包）：228 个测试文件、24194 行、1356 个用例；147 个文件名带版本号或批次号；28 个 <code>.cjs</code>、9 个 java、1 个 jar、1 个 cs；130 个文件使用 <code>readFileSync</code>，205 处断言为"读源码文本 + 正则匹配"；入口 <code>tests/all.test.ts</code> 252 行 import；<code>0</code> 个 TODO/FIXME、<code>0</code> 个 <code>console.log</code>。</p>
+      <p>AGENTS.md（同一源码包）：1213 字节、9 条规则，其中 8 条为发布流程；其指向的 <code>kamubaba-i/KAMUCL</code> 现已不可访问，仓库仅存在 <code>main</code>（无 <code>master</code>），且唯一 Release 的说明写着"预计不会再在 github 对外发布更新了"。</p>
+      <p>仓库侧数据（GitHub API）：<code>v1.1.72</code>、体积 410297 KB、130 star、Issues 已关闭（<code>has_issues: false</code>）；263 个提交中 242 个为 <code>dev@kamucl.local</code>。</p>
+      <p>Client ID：旧 <code>c36a9***-***2031eb</code>（Prism Launcher）→ 2026-10-14 提交 <code>4187127</code> 起改为 <code>06cc8***-***08f8</code>。</p>
+      <p>条款依据：Microsoft Identity Platform Terms of Use（Last revised: May 01, 2019，页面核对于 2026-11-17），正文引用的英文逐字取自 §3.2、§3.1、§1.2.11、§2.2、§2.1.3 与 §2 首句。</p>
+      <p>Linux 相关证据（同一源码包）：<code>docs/LINUX-1.1.11.md</code> 自述"所有评分 null、完整资格 false、无 Release"，并列出七类未补齐的必测证据；<code>.github/workflows/linux-build.yml</code> 仅支持 <code>workflow_dispatch</code>，注释明确"Automatic releases currently target Windows and Mac ARM64 only"；<code>scripts/platform-release-gate.cjs</code> 要求 Ubuntu 24.04 与 26.04 两套真实桌面原生证据；GitHub 当前仅 1 个 Release、1 个附件（<code>KAMUCL-1.1.72.exe</code>）。</p>
+      <p>素材来源于原 KAMUCL 的 issue 中，但是现在已经找不到了。</p>
+      <p>感谢相关 issue 里的讨论。</p>
+    </div>
+  </section>
+
+  <footer class="post-footer">
+    <p class="post-copyright">本文为个人评测，观点仅代表作者本人 &copy; BetaStudio2</p>
+  </footer>
+
+</article>

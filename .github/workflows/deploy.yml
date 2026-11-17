@@ -33,8 +33,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # 仓库里已提交 Desktop/public/static 快照（由 pnpm export 生成），
-      # CI 不再读 data/（数据库与 .domt 源文件不公开）。
+      # 文章源文件（data/documents/main）、加载项（data/addons/main）、作者与壁纸
+      # 都随仓库提交，因此 CI 直接从 data/ 重新导出，不依赖 Desktop/public/static 的历史快照。
+      - name: Export article data
+        run: pnpm export
+
       - name: Build static site
         # 项目页部署在 /<repo>/ 子路径；改用自定义域名时把 BASE_PATH 改成 /
         env:
