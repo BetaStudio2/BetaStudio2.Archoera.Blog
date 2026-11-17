@@ -65,18 +65,31 @@ For licensing inquiries, please contact the copyright holder via a repository
 issue or the GitHub account.
 
 
-第三方组件 / Third-party components
+第三方内容 / Third-party content
 ----------------------------------
 
-本仓库包含的第三方组件遵循其各自的许可证，不受上述声明约束：
+本仓库包含部分第三方内容，包括但不限于：
 
-  - `Desktop/public/live2d/` —— Live2D Cubism SDK 与示例模型
-    参见 `Desktop/public/live2d/LICENSE.md` 与 `NOTICE.md`
-  - `Desktop/public/fonts/` —— MiSans 字体
-  - `Desktop/public/addons/` —— WebWord 加载项
-  - `Desktop/public/spellcheck/` —— 拼写检查词库
-  - 其他在文件或目录内另行注明来源与许可的内容
+  - 开源库与 SDK（如 Live2D Cubism SDK、pinyinlite）
+  - 字体（如 MiSans）
+  - 词库与公开数据整理（拼写检查词库等）
+  - 图片、音频等素材（壁纸、头像、文章配图、背景音乐等）
 
-The third-party components bundled in this repository remain under their own
-licenses and are not covered by the statement above. See the license and
-notice files inside the corresponding directories.
+上述内容不适用本仓库的「保留所有权利」声明，其版权与许可归各自权利人所有，
+仅按原许可范围或原作者授权随本站使用。具体条款以对应目录内的 LICENSE /
+NOTICE / README 文件或原始来源页面为准。
+
+如认为某项内容侵犯了你的权利，请通过仓库 Issue 或 GitHub 账号联系，
+核实后会及时移除。
+
+The third-party content bundled in this repository — including but not limited
+to open-source libraries and SDKs (e.g. Live2D Cubism SDK, pinyinlite), fonts
+(e.g. MiSans), dictionaries and public datasets, and image/audio assets such as
+wallpapers, avatars, article images and background music — is not covered by the
+"All Rights Reserved" statement above. Copyright and licenses remain with their
+respective owners, and such content is used only within the scope of the original
+licenses or the authors' permission. Refer to the LICENSE / NOTICE / README files
+in the corresponding directories, or the original source pages, for specific terms.
+
+If you believe any content infringes your rights, please contact us via a
+repository issue or the GitHub account, and it will be removed after verification.
