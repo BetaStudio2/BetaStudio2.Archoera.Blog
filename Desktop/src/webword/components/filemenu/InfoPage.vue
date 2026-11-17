@@ -183,7 +183,7 @@ async function refreshInfo() {
               <span
                 class="file-info-avatar"
                 :class="{ 'file-info-avatar-deleted': authorDisplayName === '账号已注销' }"
-                :style="authorAvatarUrl ? { backgroundImage: `url(${authorAvatarUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', color: 'transparent' } : {}"
+                :style="authorAvatarUrl ? { '--info-avatar': `url(${authorAvatarUrl})`, color: 'transparent' } : {}"
               >{{ (authorDisplayName || 'W').charAt(0).toUpperCase() }}</span>{{ authorLoading ? t('wwf.info.loading') : (authorDisplayName || t('wwf.info.defaultUser')) }}
             </span>
           </span>

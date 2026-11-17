@@ -185,7 +185,9 @@ const defaultWallpaper = STATIC_MODE ? asset('background/4.png') : '/api/backgro
 
 const wallpaperStyle = computed(() => {
   const url = wallpaperUrl.value || defaultWallpaper
-  return { background: `url(${url}) center / cover no-repeat` }
+  // 用自定义属性而不是内联 background 简写：某些浏览器扩展（如深色模式类）会把内联
+  // background 的值拼进属性选择器，遇到 url("…") 里的引号会生成非法 CSS 并抛 insertRule 错误
+  return { '--wallpaper-image': `url("${url.replace(/"/g, '%22')}")` }
 })
 
 function handleWallpaperChange(e: Event) {
@@ -471,6 +473,9 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  /* overflow:hidden 仍然可以被 scrollIntoView / focus 程序化滚动，把整个桌面外壳
+     （图标、窗口、任务栏）一起滚走；clip 不是滚动容器，可以彻底避免 */
+  overflow: clip;
   position: relative;
   font-family: 'Segoe UI', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
   user-select: none;
@@ -482,6 +487,10 @@ onUnmounted(() => {
   position: absolute;
   inset: 0;
   z-index: 0;
+  background-image: var(--wallpaper-image);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   animation: wallpaper-breathe 20s ease-in-out infinite alternate;
 
   &::after {

@@ -85,7 +85,7 @@
                       :class="{ active: activeWallpaperUrl === bg.url }"
                       @click="selectWallpaper(bg.url)"
                     >
-                      <div class="wp-preview" :style="{ backgroundImage: `url(${bg.url})`, backgroundSize: 'cover', backgroundPosition: 'center' }">
+                      <div class="wp-preview" :style="{ '--wp-preview': `url(${bg.url})` }">
                       </div>
                       <span class="wp-name">{{ bg.id }}</span>
                     </div>
@@ -202,7 +202,7 @@
                   :class="{ active: activeWallpaperUrl === bg.url }"
                   @click="selectWallpaper(bg.url)"
                 >
-                  <div class="wp-preview" :style="{ backgroundImage: `url(${bg.url})`, backgroundSize: 'cover', backgroundPosition: 'center' }">
+                  <div class="wp-preview" :style="{ '--wp-preview': `url(${bg.url})` }">
                   </div>
                   <span class="wp-name">{{ bg.id }}</span>
                 </div>
@@ -606,6 +606,9 @@ function onLive2DToggle() {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background-image: var(--wp-preview);
+  background-size: cover;
+  background-position: center;
 
   svg { opacity: .4; }
 }
