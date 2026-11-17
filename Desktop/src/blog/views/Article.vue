@@ -179,7 +179,31 @@ function onTocScrollEnd() {
   clearTimeout(tocScrollEndTimer)
 }
 
-function scrollToHeading(href: string) {
+/**
+ * 文章配图是 loading="lazy"：如果目标章节在图片下方，平滑滚动途中图片才加载，
+ * 高度突然增加会把目标推走，表现为“点了目录却停不到位置 / 越点越往下”。
+ * 跳转前先把正文里的懒加载图片放出来，并等它们完成（最多等 1.2s）。
+ */
+async function ensureArticleImagesReady() {
+  const root = contentRef.value
+  if (!root) return
+  const pending: Promise<unknown>[] = []
+  root.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach(img => {
+    if (img.complete) return
+    img.loading = 'eager'
+    pending.push(new Promise<void>(resolve => {
+      img.addEventListener('load', () => resolve(), { once: true })
+      img.addEventListener('error', () => resolve(), { once: true })
+    }))
+  })
+  if (!pending.length) return
+  await Promise.race([
+    Promise.all(pending),
+    new Promise<void>(resolve => window.setTimeout(resolve, 1200)),
+  ])
+}
+
+async function scrollToHeading(href: string) {
   const id = href.replace('#', '')
   const el = document.getElementById(id)
   if (!el) return
@@ -189,7 +213,10 @@ function scrollToHeading(href: string) {
   tocScrollLock = true
   clearTimeout(tocScrollEndTimer)
   // 兜底：scrollend 事件在某些环境下不可靠时，超时后恢复跟随
-  tocScrollEndTimer = window.setTimeout(onTocScrollEnd, 800)
+  tocScrollEndTimer = window.setTimeout(onTocScrollEnd, 1200)
+
+  // 等懒加载图片落位后再测量，否则途中增长的高度会让目标偏移
+  await ensureArticleImagesReady()
 
   const container = document.querySelector('.blog-app')
   if (container) {
@@ -429,6 +456,12 @@ onUnmounted(() => {
 }
 
 // ── Layout ──
+/* 正文页比首页/分类更宽：单独放大容器，正文列放宽到 1000px */
+.article-header .header-content,
+.article-layout.container {
+  max-width: 1360px;
+}
+
 .article-layout {
   display: flex;
   gap: 48px;
@@ -441,7 +474,7 @@ onUnmounted(() => {
   flex: 1;
   min-width: 0;
   /* 加宽正文列：过窄会把长文拉得很长 */
-  max-width: 880px;
+  max-width: 1000px;
   animation: article-fade .5s ease both;
 }
 
@@ -451,7 +484,7 @@ onUnmounted(() => {
 }
 
 .article-sidebar {
-  width: 220px;
+  width: 240px;
   flex-shrink: 0;
   position: sticky;
   top: 80px;
@@ -506,6 +539,12 @@ onUnmounted(() => {
 }
 
 // ── Content Styles (scoped globally within .article-content) ──
+/* 文章正文 HTML 自带 .blog-post，WebWord 全局样式里限制为 780px；博客文章页放开到正文列宽 */
+.article-content :deep(.blog-post) {
+  max-width: 100%;
+  margin: 0;
+}
+
 :deep(.article-content) {
   font-size: 16px;
   line-height: 1.8;
