@@ -43,8 +43,6 @@ export default {
   'wwf.options.autoSaveTitle': '自动保存间隔',
   'wwf.options.autoSaveDesc': '自动保存文档的时间间隔（分钟）',
   'wwf.options.minutes': '{count} 分钟',
-  'wwf.options.spellCheckTitle': '拼写检查',
-  'wwf.options.spellCheckDesc': '在输入时自动检查拼写错误',
   'wwf.options.rulerTitle': '显示标尺',
   'wwf.options.rulerDesc': '在文档编辑区域显示水平和垂直标尺',
   'wwf.options.gridlinesTitle': '显示网格线',

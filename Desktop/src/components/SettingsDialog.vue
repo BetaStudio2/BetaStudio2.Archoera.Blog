@@ -248,6 +248,7 @@ import { useI18n } from 'vue-i18n'
 import api from '@/services/api'
 import type { BackgroundPreset } from '@/services/api'
 import { STATIC_MODE, asset, withBase } from '@/utils/siteMode'
+import { migrateWallpaperUrl } from '@/utils/wallpaper'
 import i18n, { setLocale } from '@/i18n'
 
 withDefaults(defineProps<{ embedded?: boolean }>(), { embedded: false })
@@ -292,8 +293,8 @@ const runtimeInfo = computed(() => {
 
 // ── Wallpapers ──
 const backgrounds = ref<BackgroundPreset[]>([])
-const activeWallpaperUrl = ref(withBase(localStorage.getItem('desktop_wallpaper_url') || ''))
-const defaultWallpaper = STATIC_MODE ? asset('background/4.png') : '/api/backgrounds/file/4.png'
+const activeWallpaperUrl = ref(withBase(migrateWallpaperUrl(localStorage.getItem('desktop_wallpaper_url') || '')))
+const defaultWallpaper = STATIC_MODE ? asset('background/4.webp') : '/api/backgrounds/file/4.webp'
 
 // 壁纸只按序号标识（展示文件名去掉扩展名，即 1 / 2 / 3…），不再维护名称
 

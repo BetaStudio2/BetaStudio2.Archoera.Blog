@@ -47,7 +47,6 @@ const defaults: Record<string, unknown> = {
   theme: 'dark',
   startup: 'start',
   recentCount: '10',
-  spellCheck: true,
   fontSize: '12',
   autoSaveInterval: '5',
   showRuler: true,
@@ -67,7 +66,6 @@ const stored = readSettings()
 const theme = ref(asString(stored.theme, defaults.theme))
 const startup = ref(asString(stored.startup, defaults.startup))
 const recentCount = ref(asString(stored.recentCount, defaults.recentCount))
-const spellCheck = ref(asBool(stored.spellCheck, defaults.spellCheck))
 const fontSize = ref(asString(stored.fontSize, defaults.fontSize))
 const autoSaveInterval = ref(asString(stored.autoSaveInterval, defaults.autoSaveInterval))
 
@@ -99,7 +97,6 @@ watch(
     theme: theme.value,
     startup: startup.value,
     recentCount: recentCount.value,
-    spellCheck: spellCheck.value,
     fontSize: fontSize.value,
     autoSaveInterval: autoSaveInterval.value,
     showRuler: showRuler.value,
@@ -140,7 +137,7 @@ function resetAllSettings() {
   }
   // Reset all reactive refs
   const allRefs: Record<string, any> = {
-    theme, startup, recentCount, spellCheck, fontSize, autoSaveInterval,
+    theme, startup, recentCount, fontSize, autoSaveInterval,
     showRuler, showGridlines, showWhitespace, zoomLevel,
     defaultSaveFormat, keepRecentDocs, confirmBeforeSave,
     addonsEnabled, autoRecovery,
@@ -281,16 +278,6 @@ onUnmounted(() => {
                 <option value="10">{{ $t('wwf.options.minutes', { count: 10 }) }}</option>
                 <option value="15">{{ $t('wwf.options.minutes', { count: 15 }) }}</option>
               </select>
-            </div>
-            <div class="file-option-item">
-              <div class="file-option-label">
-                <span class="file-option-title">{{ $t('wwf.options.spellCheckTitle') }}</span>
-                <span class="file-option-desc">{{ $t('wwf.options.spellCheckDesc') }}</span>
-              </div>
-              <label class="file-option-toggle">
-                <input type="checkbox" v-model="spellCheck">
-                <span class="file-option-toggle-slider"></span>
-              </label>
             </div>
           </div>
         </div>

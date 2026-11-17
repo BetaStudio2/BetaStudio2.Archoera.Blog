@@ -153,6 +153,7 @@
 import { ref, computed, onMounted, onUnmounted, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { STATIC_MODE, SITE_BASE, asset, withBase } from '@/utils/siteMode'
+import { migrateWallpaperUrl } from '@/utils/wallpaper'
 import { useWindowsStore } from '@/stores/windows'
 import { TASK_ICONS, APP_ICONS } from '@/utils/icons'
 import DesktopWindow from '@/components/DesktopWindow.vue'
@@ -177,11 +178,11 @@ function isSafeWallpaperUrl(url: string): boolean {
   return /^(https?:|data:image\/|blob:)/.test(url) || url.startsWith('/')
 }
 
-const storedWallpaper = localStorage.getItem('desktop_wallpaper_url') || ''
+const storedWallpaper = migrateWallpaperUrl(localStorage.getItem('desktop_wallpaper_url') || '')
 // 旧版本存的是站点根相对路径（/background/1.png），这里补上部署 base
 const wallpaperUrl = ref(isSafeWallpaperUrl(storedWallpaper) ? withBase(storedWallpaper) : '')
 // 静态模式下从 public/background 直接取图，避免依赖后端接口
-const defaultWallpaper = STATIC_MODE ? asset('background/4.png') : '/api/backgrounds/file/4.png'
+const defaultWallpaper = STATIC_MODE ? asset('background/4.webp') : '/api/backgrounds/file/4.webp'
 
 const wallpaperStyle = computed(() => {
   const url = wallpaperUrl.value || defaultWallpaper
