@@ -10,10 +10,10 @@ dist/
 
 # ── 数据目录 ─────────────────────────────
 # 文章源文件与素材（data/documents/main）需要随仓库一起提交，供构建使用。
-# 账号体系已移除：data/accounts 是旧账号数据（webword.db / 头像 / 壁纸），代码不再读取，
-# 这里保留忽略规则只是防止历史数据被误提交。
+# 加载项源码（data/addons/main）同样提交，`pnpm export` 会把它导出到
+# Desktop/public/static/addons；运行期索引与账号遗留数据不提交。
 data/accounts/
-data/addons/
+data/addons/database/
 data/games/
 data/documents/database/
 *.db
