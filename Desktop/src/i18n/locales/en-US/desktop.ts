@@ -9,7 +9,7 @@ export default {
   // Desktop apps
   'desktop.app.perfcounter': 'Perf Counter',
   'desktop.app.perfcounter.desc': 'Performance Monitor',
-  'desktop.app.blog': 'Blog',
+  'desktop.app.blog': 'Nook',
   'desktop.app.blog.desc': 'Browse Articles',
   'desktop.app.explorer': 'File Explorer',
   'desktop.app.explorer.desc': 'Browse files & programs',

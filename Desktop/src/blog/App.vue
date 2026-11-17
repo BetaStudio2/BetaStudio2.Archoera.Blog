@@ -13,7 +13,7 @@
               <rect x="11" y="24" width="8.5" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
             </svg>
           </span>
-          <span class="brand-text">BetaStudio2 Blog</span>
+          <span class="brand-text">BetaStudio2 小栈</span>
         </router-link>
         <nav class="header-nav">
           <router-link to="/" class="nav-link" active-class="nav-active" :exact="true">首页</router-link>
@@ -236,9 +236,8 @@ img {
 }
 
 .header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+  /* 页头不设最大宽度：品牌贴最左，导航贴最右 */
+  padding: 0 clamp(20px, 3vw, 56px);
   height: 56px;
   display: flex;
   align-items: center;
@@ -252,6 +251,7 @@ img {
   font-size: 16px;
   font-weight: 700;
   color: #fff;
+  white-space: nowrap;
   transition: opacity .15s;
 
   &:hover { opacity: .85; }

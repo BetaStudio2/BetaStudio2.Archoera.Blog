@@ -3,13 +3,13 @@
   <Transition name="splash-fade">
     <div v-if="showSplash" class="boot-splash">
       <div class="decor-prompt">❯ _</div>
-      <div class="decor-terminal">BetaStudio2 Blog
+      <div class="decor-terminal">BetaStudio2 小栈
 ---
 node v22.14.0
 vue 3.4.0</div>
       <div class="splash-terminal">
         <div class="splash-header">
-          <span class="splash-title">BetaStudio2 Blog — Boot Sequence</span>
+          <span class="splash-title">BetaStudio2 小栈 — Boot Sequence</span>
           <span class="splash-subtitle">{{ statusText }}</span>
         </div>
         <div class="splash-body" ref="viewportRef">
@@ -41,7 +41,7 @@ vue 3.4.0</div>
               <rect x="11" y="24" width="8.5" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
             </svg>
           </span>
-          <span class="brand-text">BetaStudio2 Blog</span>
+          <span class="brand-text">BetaStudio2 小栈</span>
         </router-link>
         <nav class="header-nav">
           <router-link to="/blog/" class="nav-link" active-class="nav-active" :exact="true">{{ $t('blog.home') }}</router-link>
@@ -203,7 +203,7 @@ async function bootStep(step: { type: string; label: string; action?: () => Prom
 async function startBoot() {
   const steps = [
     { type: 'info', label: 'boot' },
-    { type: 'info', label: 'Booting BetaStudio2 Blog ...' },
+    { type: 'info', label: 'Booting BetaStudio2 小栈 ...' },
     { type: 'info', label: 'Initializing Vue application' },
     { type: 'info', label: 'Mounting Pinia store modules' },
     { type: 'info', label: 'Configuring route table, 8 entries' },
@@ -216,10 +216,6 @@ async function startBoot() {
     {
       type: 'info', label: 'Fetching document index',
       action: async () => { await delay(120) }
-    },
-    {
-      type: 'info', label: 'Checking authentication session',
-      action: async () => { await delay(60) }
     },
     {
       type: 'info', label: 'Pre-loading Live2D assets',
@@ -555,12 +551,10 @@ onMounted(() => {
     radial-gradient(circle, rgba(255, 255, 255, .04) 1px, transparent 1px),
     /* Green glow top-left */
     radial-gradient(ellipse 800px 500px at 0% 0%, rgba(66, 184, 131, .08) 0%, transparent 70%),
-    /* Blue glow bottom-right */
-    radial-gradient(ellipse 600px 600px at 100% 100%, rgba(56, 132, 255, .06) 0%, transparent 70%),
     /* Small glow top-right */
     radial-gradient(ellipse 400px 300px at 80% 10%, rgba(66, 184, 131, .05) 0%, transparent 70%);
-  background-size: 32px 32px, 100% 100%, 100% 100%, 100% 100%;
-  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 32px 32px, 100% 100%, 100% 100%;
+  background-repeat: repeat, no-repeat, no-repeat;
 }
 
 .blog-main {
@@ -682,9 +676,8 @@ onMounted(() => {
 }
 
 .header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+  /* 页头不设最大宽度：品牌贴最左，导航贴最右 */
+  padding: 0 clamp(20px, 3vw, 56px);
   height: 56px;
   display: flex;
   align-items: center;
@@ -698,6 +691,7 @@ onMounted(() => {
   font-size: 16px;
   font-weight: 700;
   color: #fff;
+  white-space: nowrap;
   transition: opacity .15s;
 
   &:hover { opacity: .85; }
@@ -764,5 +758,47 @@ onMounted(() => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 0 16px;
+    height: 52px;
+  }
+
+  .header-nav {
+    gap: 2px;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-inner {
+    padding: 0 12px;
+  }
+
+  .brand-text {
+    /* 极窄屏只保留图标，避免与导航挤压换行 */
+    display: none;
+  }
+
+  .nav-link {
+    padding: 6px 8px;
+    font-size: 12.5px;
+  }
+
+  .container {
+    padding: 0 12px;
+  }
 }
 </style>
