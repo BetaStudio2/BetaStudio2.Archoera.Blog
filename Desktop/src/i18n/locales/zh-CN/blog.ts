@@ -26,7 +26,6 @@ export default {
   // ── 文章页（Article.vue）──
   'blog.minutes': '{count} 分钟',
   'blog.tagsLabel': '标签',
-  'blog.highlightsTitle': '亮点',
   'blog.referencesTitle': '参考来源',
   'blog.tocTitle': '目录',
   'blog.noContent': '暂无内容',
