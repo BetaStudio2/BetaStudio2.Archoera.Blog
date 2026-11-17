@@ -96,62 +96,94 @@ comments_mode: public
 
 <style>
 .kq-hero{
-  margin:0 0 36px;padding:22px 24px 20px;
-  border:1px solid rgba(96,165,250,.18);border-radius:14px;
-  background:
-    radial-gradient(120% 160% at 0% 0%,rgba(96,165,250,.12),transparent 58%),
-    radial-gradient(120% 160% at 100% 100%,rgba(167,139,250,.08),transparent 60%),
-    rgba(255,255,255,.02);
+  margin:0 0 40px;padding:18px 20px 20px;
+  border:1px solid rgba(255,255,255,.07);border-radius:10px;
+  background:rgba(255,255,255,.02);
 }
 .kq-hero-label{
-  margin:0 0 12px;font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:#60a5fa;
+  margin:0 0 12px;font-size:11px;font-weight:600;letter-spacing:.14em;
+  text-transform:uppercase;color:#7f8798;
 }
 .kq-stats{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));
-  gap:10px;margin:0;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));
+  border:1px solid rgba(255,255,255,.08);border-radius:8px;
+  overflow:hidden;background:rgba(255,255,255,.015);
 }
 .kq-stat{
-  padding:13px 12px;border:1px solid rgba(255,255,255,.07);
-  border-radius:10px;background:rgba(0,0,0,.18);text-align:center;
+  padding:14px 16px 13px;border-left:1px solid rgba(255,255,255,.07);
+  min-width:0;
 }
-.kq-stat b{display:block;font-size:20px;color:#f0f3f8;letter-spacing:-.5px}
-.kq-stat span{display:block;margin-top:4px;font-size:11.5px;color:#7f8798;line-height:1.5}
+.kq-stat:first-child{border-left:none}
+.kq-stat b{
+  display:block;font-size:21px;font-weight:700;line-height:1.2;
+  letter-spacing:-.4px;color:#f0f3f8;font-variant-numeric:tabular-nums;
+}
+.kq-stat span{
+  display:block;margin-top:5px;font-size:12px;line-height:1.5;
+  color:#8b93a1;
+}
 
+/* GitHub 式提示块：左侧强调条 + 淡背景 */
 .kq-callout{
-  margin:0 0 28px;padding:20px 22px;
-  background:linear-gradient(135deg,rgba(96,165,250,.06),rgba(96,165,250,.02));
-  border:1px solid rgba(96,165,250,.12);
-  border-left:3px solid rgba(96,165,250,.3);
-  border-radius:0 10px 10px 0;
+  margin:0 0 28px;padding:14px 18px 4px;
+  border-left:4px solid rgba(96,165,250,.55);
+  border-radius:6px;background:rgba(96,165,250,.055);
 }
-.kq-callout p{font-size:15px;line-height:1.85;color:#c8d0da;margin:0 0 10px}
-.kq-callout p:last-child{margin-bottom:0}
 .kq-callout .kq-callout-title{
-  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
-  color:#60a5fa;margin:0 0 10px;
+  margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.02em;
+  color:#93c5fd;text-transform:none;
+}
+.kq-callout p{
+  margin:0 0 10px;font-size:14.5px;line-height:1.85;color:#b9c1cd;
 }
 
-.kq-table-wrap{width:100%;overflow-x:auto;margin:14px 0 22px}
-.kq-table{width:100%;min-width:600px;border-collapse:collapse;font-size:13.5px}
-.kq-table th,.kq-table td{
-  border:1px solid rgba(255,255,255,.07);padding:9px 11px;
-  text-align:left;vertical-align:top;line-height:1.7;
+/* 引用块：沿用站点 class，只改成更克制的左侧条 */
+.blog-post .post-blockquote{
+  margin:0 0 22px;padding:12px 18px;
+  border-left:4px solid rgba(255,255,255,.16);
+  border-radius:0 6px 6px 0;background:rgba(255,255,255,.02);
 }
-.kq-table th{background:rgba(255,255,255,.04);color:#e2e6ed;font-weight:600;white-space:nowrap}
-.kq-table td{color:#9ca3af}
-.kq-table tr:nth-child(even) td{background:rgba(255,255,255,.015)}
-.kq-table b{color:#e2e6ed}
+.blog-post .post-blockquote p{margin:2px 0;font-size:15px;color:#9ca3af}
+.blog-post .post-blockquote.post-blockquote-highlight{
+  border-left-color:rgba(96,165,250,.5);background:rgba(96,165,250,.05);
+}
+.blog-post .post-blockquote-highlight p{color:#b9c1cd}
 
+/* 行内代码：GitHub 风格的中性底色，不用站点默认的蓝色药丸 */
+.blog-post :not(pre) > code{
+  font-size:.86em;padding:.15em .38em;border-radius:5px;
+  background:rgba(110,118,129,.25);color:#d6dde7;
+}
+
+/* 代码块 */
 .kq-code{
-  margin:16px 0 20px;padding:14px 16px;overflow-x:auto;
-  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);
-  border-radius:10px;
+  margin:18px 0 22px;padding:14px 16px;overflow-x:auto;
+  background:#0b0e14;border:1px solid rgba(255,255,255,.09);
+  border-radius:8px;font-size:13px;line-height:1.7;
 }
 .kq-code code{
-  background:none;padding:0;font-size:13px;line-height:1.7;color:#93c5fd;
-  white-space:pre;
+  display:block;padding:0;background:none;border:none;
+  font-size:13px;line-height:1.7;color:#c9d1d9;white-space:pre;
 }
+
+/* 表格：更接近 GitHub 的细线风格 */
+.kq-table-wrap{
+  width:100%;overflow-x:auto;margin:16px 0 22px;
+  border:1px solid rgba(255,255,255,.08);border-radius:8px;
+}
+.kq-table{width:100%;min-width:600px;border-collapse:collapse;font-size:13.5px}
+.kq-table th,.kq-table td{
+  border-bottom:1px solid rgba(255,255,255,.07);
+  padding:9px 12px;text-align:left;vertical-align:top;line-height:1.7;
+}
+.kq-table th{
+  background:rgba(255,255,255,.035);color:#e2e6ed;
+  font-weight:600;white-space:nowrap;border-bottom-color:rgba(255,255,255,.1);
+}
+.kq-table td{color:#9ca3af}
+.kq-table tbody tr:last-child td{border-bottom:none}
+.kq-table tbody tr:nth-child(even) td{background:rgba(255,255,255,.012)}
+.kq-table b{color:#e2e6ed}
 
 .kq-note{font-size:13px;line-height:1.9;color:#7f8798}
 .kq-note p{margin:0 0 10px}
@@ -179,11 +211,11 @@ comments_mode: public
   <div class="kq-hero">
     <p class="kq-hero-label">先看几个数字</p>
     <div class="kq-stats">
-      <div class="kq-stat"><b>730MB</b><span>解压后的工作区，代码只占 17MB</span></div>
-      <div class="kq-stat"><b>693MB</b><span><code>docs/</code> 一个目录的体积</span></div>
-      <div class="kq-stat"><b>8914</b><span>仓库里的 jpg 截图</span></div>
-      <div class="kq-stat"><b>1356</b><span>测试用例，入口只有一个文件</span></div>
-      <div class="kq-stat"><b>1</b><span>公开 Release，附赠一个 exe</span></div>
+      <div class="kq-stat"><b>730MB</b><span>工作区总体积</span></div>
+      <div class="kq-stat"><b>693MB</b><span>docs/ 目录</span></div>
+      <div class="kq-stat"><b>8914</b><span>张 jpg 截图</span></div>
+      <div class="kq-stat"><b>1356</b><span>个测试用例</span></div>
+      <div class="kq-stat"><b>1</b><span>个公开 Release</span></div>
     </div>
   </div>
 
