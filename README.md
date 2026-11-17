@@ -36,13 +36,16 @@ pnpm preview:static                      # 按 Pages 规则本地预览
 
 ```
 Desktop/            前端（Vue 3 + Vite）
-  public/static/    导出快照（需提交）
-  src/blog/         博客
-  src/webword/      WebWord
-  src/components/   桌面外壳与窗口
+  public/background/ 壁纸源（提交，随站点发布）
+  public/static/     导出快照（需提交）
+  src/blog/          博客
+  src/webword/       WebWord
+  src/components/    桌面外壳与窗口
 server/             本地开发用的 Express
 scripts/            export / build:static / preview:static
-data/               文章源文件（提交）；数据库与加载项（不提交）
+data/documents/     文章源文件（提交）
+data/authors/       作者清单 authors.json + 头像（提交）
+data/               数据库与加载项（不提交）
 ```
 
 ## 许可证

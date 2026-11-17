@@ -30,7 +30,7 @@ const domt = require('../server/domt.cjs')
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const DOCS_DIR = path.join(ROOT, 'data', 'documents', 'main')
-const AVATAR_DIR = path.join(ROOT, 'data', 'accounts', 'base', 'avatars')
+const AUTHORS_DIR = path.join(ROOT, 'data', 'authors')
 const ADDONS_DIR = path.join(ROOT, 'data', 'addons', 'main')
 const BACKGROUND_DIR = path.join(ROOT, 'Desktop', 'public', 'background')
 const OUT_DIR = path.join(ROOT, 'Desktop', 'public', 'static')
@@ -161,41 +161,17 @@ function readRawArticle(dirPath) {
 }
 
 // ── 作者信息 ────────────────────────────────────────────────
-// GitHub Actions 上读不到 SQLite（数据库不随仓库发布），因此以仓库内的快照
-// data/accounts/base/authors.json 为准；本地存在数据库时优先用数据库并回写快照，
-// 保证改了昵称/头像后重新导出即可生效。
-const USERS_DB = path.join(ROOT, 'data', 'accounts', 'base', 'webword.db')
-const AUTHORS_SNAPSHOT = path.join(ROOT, 'data', 'accounts', 'base', 'authors.json')
-
-function readAuthorsFromDb() {
-  if (!fs.existsSync(USERS_DB)) return null
-  try {
-    const Database = require('better-sqlite3')
-    const db = new Database(USERS_DB, { readonly: true })
-    const rows = db.prepare('SELECT uuid, display_name, avatar FROM users WHERE uuid IS NOT NULL').all()
-    db.close()
-    return rows
-  } catch {
-    return null
-  }
-}
+// 站点已不做账号体系：作者信息不再从数据库读取，直接以仓库内
+// data/authors/authors.json 为准（头像同目录），随仓库提交、可直接构建。
+const AUTHORS_FILE = path.join(AUTHORS_DIR, 'authors.json')
 
 function readAuthors() {
-  const fromDb = readAuthorsFromDb()
-  if (fromDb) {
-    try {
-      fs.mkdirSync(path.dirname(AUTHORS_SNAPSHOT), { recursive: true })
-      fs.writeFileSync(AUTHORS_SNAPSHOT, JSON.stringify(fromDb, null, 2))
-      console.log('[export-static] 已从数据库刷新作者快照 authors.json')
-    } catch { /* 无写权限时忽略，直接使用内存数据 */ }
-    return fromDb
-  }
-  if (!fs.existsSync(AUTHORS_SNAPSHOT)) {
-    console.warn('[export-static] 缺少作者快照 authors.json，作者信息将显示为“账号已注销”')
+  if (!fs.existsSync(AUTHORS_FILE)) {
+    console.warn('[export-static] 缺少作者清单 data/authors/authors.json，作者信息将显示为“账号已注销”')
     return []
   }
   try {
-    const list = JSON.parse(fs.readFileSync(AUTHORS_SNAPSHOT, 'utf-8'))
+    const list = JSON.parse(fs.readFileSync(AUTHORS_FILE, 'utf-8'))
     return Array.isArray(list) ? list : []
   } catch {
     return []
@@ -252,14 +228,14 @@ function main() {
   const BLOG_DIR = path.join(OUT_DIR, 'blog')
   fs.mkdirSync(BLOG_DIR, { recursive: true })
 
-  // 作者快照（数据库 → 静态 JSON）
+  // 作者清单（data/authors/authors.json → 静态 JSON）
   const authors = readAuthors()
   const authorsOut = {}
   for (const a of authors) {
     if (!a.uuid) continue
     let avatar = null
     if (a.avatar) {
-      const src = path.join(AVATAR_DIR, a.avatar)
+      const src = path.join(AUTHORS_DIR, a.avatar)
       const dest = path.join(OUT_DIR, 'avatars', a.avatar)
       fs.mkdirSync(path.join(OUT_DIR, 'avatars'), { recursive: true })
       if (fs.existsSync(src)) {

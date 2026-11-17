@@ -2,8 +2,23 @@ const express = require('express')
 const cors = require('cors')
 const path = require('path')
 const fs = require('fs')
-const { db, addonsDb, documentsDb, DATA_DIR, AVATAR_DIR, BACKGROUNDS_DIR, ADDONS_DIR, MAIN_ADDONS_DIR, DOCUMENTS_DIR, DOCUMENTS_MAIN_DIR } = require('./database.cjs')
+const { addonsDb, documentsDb, ADDONS_DIR, MAIN_ADDONS_DIR, DOCUMENTS_DIR, DOCUMENTS_MAIN_DIR } = require('./database.cjs')
 const domt = require('./domt.cjs')
+
+// 站点已不做账号体系：作者与壁纸等公共资源放在不受 .gitignore 影响的目录里，
+// 随仓库提交，本地开发与静态构建使用同一份数据。
+const AUTHORS_DIR = path.resolve(__dirname, '..', 'data', 'authors')
+const AUTHORS_FILE = path.join(AUTHORS_DIR, 'authors.json')
+const BACKGROUNDS_DIR = path.resolve(__dirname, '..', 'Desktop', 'public', 'background')
+
+function readAuthors() {
+  try {
+    const list = JSON.parse(fs.readFileSync(AUTHORS_FILE, 'utf-8'))
+    return Array.isArray(list) ? list : []
+  } catch {
+    return []
+  }
+}
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -18,8 +33,6 @@ app.use(express.static(desktopDistPath))
 // ── Serve addon files (template.js, addon.js, style.css) ──
 app.use('/addons', express.static(MAIN_ADDONS_DIR))
 
-app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads')))
-
 // Serve static assets for categorized documents (main/ subdirectory tree)
 // 阻止文档源文件（.domt/.md/.html）被直接下载，assets 等资源仍可访问
 const BLOCKED_DOC_EXT = ['.domt', '.md', '.html']
@@ -32,22 +45,20 @@ app.use('/documents/category-files', (req, res, next) => {
 app.use('/documents/category-files', express.static(DOCUMENTS_MAIN_DIR))
 
 // ── Author lookup by UUID (public) ────────
-// 站点已无账号体系，但文章仍需显示作者昵称与头像（只读查询 users 表）
+// 站点已无账号体系：作者信息来自仓库内的 data/authors/authors.json（只读）
 
-// 作者头像：只读静态目录（上传接口随账号体系一并移除）
-app.use('/api/avatars', express.static(AVATAR_DIR))
+// 作者头像：data/authors 下随仓库提交的静态文件
+app.use('/api/avatars', express.static(AUTHORS_DIR))
 
 function resolveAuthorByUUID(uuid) {
   if (!uuid) return null
-  try {
-    const user = db.prepare('SELECT display_name, avatar FROM users WHERE uuid = ?').get(uuid)
-    if (user) {
-      return {
-        display_name: user.display_name,
-        avatar: user.avatar ? `/api/avatars/${user.avatar}` : null
-      }
+  const author = readAuthors().find(a => a.uuid === uuid)
+  if (author) {
+    return {
+      display_name: author.display_name || '未知用户',
+      avatar: author.avatar ? `/api/avatars/${author.avatar}` : null,
     }
-  } catch (_) {}
+  }
   return { display_name: '账号已注销', avatar: null }
 }
 
@@ -552,13 +563,15 @@ app.patch('/api/addons/:name/toggle', (req, res) => {
 
 // ── Backgrounds API ─────────────────────────
 
-// Serve background files
+// Serve background files（公开静态资源，仓库里的 Desktop/public/background 即壁纸源）
 app.use('/api/backgrounds/file', express.static(BACKGROUNDS_DIR))
 
 // List available backgrounds
 app.get('/api/backgrounds', (req, res) => {
   try {
-    const files = fs.readdirSync(BACKGROUNDS_DIR).filter(f => /\.(png|jpe?g|webp)$/i.test(f))
+    const files = fs.readdirSync(BACKGROUNDS_DIR)
+      .filter(f => /\.(png|jpe?g|webp)$/i.test(f))
+      .sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))
     const presets = files.map(f => ({
       id: f.replace(/\.\w+$/, ''),
       filename: f,
@@ -569,21 +582,6 @@ app.get('/api/backgrounds', (req, res) => {
     res.status(500).json({ error: e.message })
   }
 })
-
-// Copy preset backgrounds to data directory on startup
-try {
-  const presetSrc = path.resolve(__dirname, '..', 'Desktop', 'dist', 'background')
-  if (fs.existsSync(presetSrc)) {
-    const existing = fs.readdirSync(BACKGROUNDS_DIR).filter(f => /\.(png|jpe?g|webp)$/i.test(f))
-    if (existing.length === 0) {
-      const presetFiles = fs.readdirSync(presetSrc).filter(f => /\.(png|jpe?g|webp)$/i.test(f))
-      for (const f of presetFiles) {
-        fs.copyFileSync(path.join(presetSrc, f), path.join(BACKGROUNDS_DIR, f))
-      }
-      if (presetFiles.length) console.log(`Copied ${presetFiles.length} preset background(s)`)
-    }
-  }
-} catch (_) {}
 
 // ── Browser proxy（伪装为真实浏览器，去掉 iframe 嵌入限制）──
 
@@ -822,7 +820,8 @@ app.listen(PORT, () => {
   console.log(`Desktop: http://localhost:${PORT}/`)
   console.log(`WebWord: http://localhost:${PORT}/webword`)
   console.log(`Blog: http://localhost:${PORT}/blog`)
-  console.log(`Data directory: ${DATA_DIR}`)
+  console.log(`Documents: ${DOCUMENTS_DIR}`)
+  console.log(`Addons: ${MAIN_ADDONS_DIR}`)
 
   // Auto-scan addons on startup
   try {

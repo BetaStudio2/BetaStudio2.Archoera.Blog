@@ -14,11 +14,6 @@ export default {
   'settings.appearance.language': 'Language',
   'settings.appearance.languageDesc': 'Choose the interface display language',
   'settings.appearance.wallpaper': 'Wallpaper',
-  'settings.appearance.wallpaperStarry': 'Starry Sky',
-  'settings.appearance.wallpaperMountains': 'Mountains',
-  'settings.appearance.wallpaperAurora': 'Aurora',
-  'settings.appearance.wallpaperNebula': 'Nebula',
-  'settings.appearance.wallpaperSunset': 'Sunset',
 
   'settings.about.desc': 'System information and version details',
   'settings.about.version': 'Version {ver}',
