@@ -14,11 +14,6 @@ export default {
   'settings.appearance.language': '语言',
   'settings.appearance.languageDesc': '选择界面显示语言',
   'settings.appearance.wallpaper': '壁纸',
-  'settings.appearance.wallpaperStarry': '星河',
-  'settings.appearance.wallpaperMountains': '山峦',
-  'settings.appearance.wallpaperAurora': '极光',
-  'settings.appearance.wallpaperNebula': '星云',
-  'settings.appearance.wallpaperSunset': '暖阳',
 
   'settings.about.desc': '系统信息与版本详情',
   'settings.about.version': '版本 {ver}',

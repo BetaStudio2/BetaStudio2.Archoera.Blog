@@ -77,7 +77,7 @@
         <div class="start-header">
           <div class="start-user">
             <span class="start-avatar-placeholder">B</span>
-            <span class="start-login-btn">BetaStudio2</span>
+            <span class="start-user-name">BetaStudio2</span>
           </div>
         </div>
         <div class="start-apps">
@@ -152,7 +152,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { STATIC_MODE, SITE_BASE, asset } from '@/utils/siteMode'
+import { STATIC_MODE, SITE_BASE, asset, withBase } from '@/utils/siteMode'
 import { useWindowsStore } from '@/stores/windows'
 import { TASK_ICONS, APP_ICONS } from '@/utils/icons'
 import DesktopWindow from '@/components/DesktopWindow.vue'
@@ -178,7 +178,8 @@ function isSafeWallpaperUrl(url: string): boolean {
 }
 
 const storedWallpaper = localStorage.getItem('desktop_wallpaper_url') || ''
-const wallpaperUrl = ref(isSafeWallpaperUrl(storedWallpaper) ? storedWallpaper : '')
+// 旧版本存的是站点根相对路径（/background/1.png），这里补上部署 base
+const wallpaperUrl = ref(isSafeWallpaperUrl(storedWallpaper) ? withBase(storedWallpaper) : '')
 // 静态模式下从 public/background 直接取图，避免依赖后端接口
 const defaultWallpaper = STATIC_MODE ? asset('background/4.png') : '/api/backgrounds/file/4.png'
 
@@ -830,8 +831,6 @@ onUnmounted(() => {
 
   &:hover { background: rgba(255,255,255,.1); }
 }
-
-.login-link { text-decoration: none; font-size: 13px; }
 .clock-btn { cursor: pointer; }
 
 .tray-clock {
@@ -843,14 +842,6 @@ onUnmounted(() => {
 
   .tray-date { font-size: 11px; opacity: .6; }
 }
-
-.tray-avatar, .tray-avatar-placeholder {
-  width: 24px; height: 24px; border-radius: 50%; object-fit: cover;
-}
-.tray-avatar-placeholder {
-  background: #667eea; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600;
-}
-
 // ── Start Menu ──────────────────────────
 .start-menu {
   position: absolute;
@@ -887,7 +878,7 @@ onUnmounted(() => {
   background: #667eea; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;
 }
 
-.start-login-btn {
+.start-user-name {
   background: none; border: none; color: #667eea;
   font-size: 13px; cursor: pointer; padding: 0;
   &:hover { text-decoration: underline; }
@@ -955,49 +946,6 @@ onUnmounted(() => {
   .start-app-name { font-size: 13px; font-weight: 500; }
   .start-app-desc { font-size: 11px; opacity: .5; }
 }
-
-.start-footer {
-  padding: 8px; border-top: 1px solid rgba(255,255,255,.06);
-}
-
-.start-power {
-  width: 100%; display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border: none; background: none; color: #f5576c;
-  border-radius: 6px; cursor: pointer; font-size: 13px; transition: background .15s;
-
-  &:hover { background: rgba(245,87,108,.1); }
-}
-
-// ── User Menu ────────────────────────────
-.user-menu {
-  position: absolute;
-  bottom: 52px; right: 8px; z-index: 600;
-  min-width: 200px;
-  background: rgba(12,12,30,.65); backdrop-filter: blur(36px) saturate(1.2);
-  -webkit-backdrop-filter: blur(36px) saturate(1.2);
-  border: 1px solid rgba(255,255,255,.06); border-radius: 12px;
-  padding: 8px; box-shadow: 0 8px 40px rgba(0,0,0,.5);
-}
-
-.user-menu-header {
-  display: flex; align-items: center; gap: 10px; padding: 8px 10px;
-}
-.um-avatar, .um-avatar-placeholder {
-  width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
-}
-.um-avatar-placeholder {
-  background: #667eea; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600;
-}
-.um-info { display: flex; flex-direction: column; line-height: 1.3; }
-.um-name { font-size: 14px; font-weight: 500; }
-.um-email { font-size: 11px; opacity: .5; }
-.user-menu hr { border: none; border-top: 1px solid rgba(255,255,255,.06); margin: 4px 0; }
-.user-menu button {
-  width: 100%; padding: 8px 10px; border: none; background: none; color: #f5576c;
-  border-radius: 6px; cursor: pointer; font-size: 13px; text-align: left; transition: background .15s;
-  &:hover { background: rgba(245,87,108,.1); }
-}
-
 // ── Calendar Popup ────────────────────────
 .calendar-popup {
   position: absolute;

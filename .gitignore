@@ -9,8 +9,9 @@ node_modules/
 dist/
 
 # ── 数据目录 ─────────────────────────────
-# 数据库含 password_hash / sessions，绝不提交；文章索引可随时重建，也不需要提交。
 # 文章源文件与素材（data/documents/main）需要随仓库一起提交，供构建使用。
+# 账号体系已移除：data/accounts 是旧账号数据（webword.db / 头像 / 壁纸），代码不再读取，
+# 这里保留忽略规则只是防止历史数据被误提交。
 data/accounts/
 data/addons/
 data/games/
@@ -23,6 +24,11 @@ data/documents/database/
 # 游戏静态数据（随构建发布，供 /data/ 路径服务，必须提交）
 !Desktop/public/data/
 !Desktop/public/data/*.json
+
+# ── 站点公共资源（必须提交）─────────────
+# 壁纸源：Desktop/public/background/
+# 作者清单与头像：data/authors/
+# 这些资源刻意放在 data/accounts/ 之外，避免被上面的账号目录规则忽略。
 
 # OS
 .DS_Store

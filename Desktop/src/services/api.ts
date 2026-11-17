@@ -1,9 +1,16 @@
 import i18n from '@/i18n'
-import { STATIC_MODE, STATIC_DATA_BASE } from '@/utils/siteMode'
+import { STATIC_MODE, STATIC_DATA_BASE, withBase } from '@/utils/siteMode'
 
 // 站点已移除账号与评论体系：本文件只保留公开数据的读取接口
 // （壁纸列表、作者信息）。任何登录 / 注册 / 用户管理相关调用都不复存在。
 const API_BASE = '/api'
+
+/** 壁纸预设：显示名直接取 filename（去掉扩展名/序号前缀），不再依赖内部 id 映射 */
+export interface BackgroundPreset {
+  id: string
+  filename: string
+  url: string
+}
 
 class API {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -36,9 +43,11 @@ class API {
     if (STATIC_MODE) {
       const res = await fetch(`${STATIC_DATA_BASE}backgrounds.json`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      return res.json() as Promise<{ backgrounds: { id: string; filename: string; url: string }[] }>
+      const data = await res.json() as { backgrounds?: BackgroundPreset[] }
+      // 导出快照里的地址是站点根相对路径，这里补上部署 base
+      return { backgrounds: (data.backgrounds || []).map(bg => ({ ...bg, url: withBase(bg.url) })) }
     }
-    return this.request<{ backgrounds: { id: string; filename: string; url: string }[] }>('/backgrounds')
+    return this.request<{ backgrounds: BackgroundPreset[] }>('/backgrounds')
   }
 }
 
