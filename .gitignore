@@ -56,3 +56,6 @@ Desktop/applications/WebWord/public/live2d/
 # Secrets
 key.key.txt
 *.key.txt
+
+# Vite cache
+Desktop/.vite/
