@@ -9,10 +9,6 @@ pnpm install
 pnpm dev          # Express :3001 + Vite :3000
 ```
 
-- 桌面 http://localhost:3000/
-- 博客 http://localhost:3000/blog
-- WebWord http://localhost:3000/webword
-
 ## 部署
 
 线上是构建期导出的静态站：
