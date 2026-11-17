@@ -1,7 +1,6 @@
 # BetaStudio2 Blog
 
-以「桌面系统」为外壳的个人站点：桌面 → 博客 / WebWord 文档编辑器。
-Vue 3 + Vite；站点没有账号与评论体系，线上以纯静态形式部署在 GitHub Pages。
+以「桌面」为外壳的个人站点：桌面 → 博客 / WebWord 文档编辑器。
 
 ## 开发
 
@@ -16,7 +15,7 @@ pnpm dev          # Express :3001 + Vite :3000
 
 ## 部署
 
-线上是构建期导出的静态站，Pages 上没有 Node 进程：
+线上是构建期导出的静态站：
 
 ```bash
 pnpm export                              # 文章 → Desktop/public/static
