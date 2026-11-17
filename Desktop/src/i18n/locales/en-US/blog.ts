@@ -26,7 +26,6 @@ export default {
   // ── Article (Article.vue) ──
   'blog.minutes': '{count} min read',
   'blog.tagsLabel': 'Tags',
-  'blog.highlightsTitle': 'Highlights',
   'blog.referencesTitle': 'References',
   'blog.tocTitle': 'Table of Contents',
   'blog.noContent': 'No content',

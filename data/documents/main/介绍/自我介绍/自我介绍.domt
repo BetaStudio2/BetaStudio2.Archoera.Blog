@@ -46,14 +46,6 @@ key_facts:
     - 已读乱回
     - 猫晚期
     - 倔强 Full Combo
-highlights:
-  - 啥都不会很多的地球 OL 玩家
-  - 撸猫才是第一生产力
-  - 音游倔强 Full Combo 中
-  - MC jvav 玩家 & MC 萌新
-  - Arch Linux 用户（三天重装一次）
-  - 偶尔已读乱回选手
-  - 网页砖家 & Node.js & Docker
 sections:
   - id: opening
     title: 开场白
@@ -138,7 +130,7 @@ comments_mode: public
         <div class="post-card-icon">🐱</div>
         <div class="post-card-content">
           <h3>整天只会撸猫的猫晚期患者(?)</h3>
-          <p>撸猫才是第一生产力，写代码只是为了更好地云吸猫。</p>
+          <p>撸猫才是第一生产力，写代码只是为了更好地吸猫。</p>
         </div>
       </div>
 
@@ -146,15 +138,15 @@ comments_mode: public
         <div class="post-card-icon">🎵</div>
         <div class="post-card-content">
           <h3>音游小白</h3>
-          <p>手速跟不上脑子，但依然倔强地 Full Combo 中。</p>
+          <p>手速跟不上脑子，但依然倔强地 Full Combo 。（骗你的连FC也拿不到）</p>
         </div>
       </div>
 
       <div class="post-card">
         <div class="post-card-icon">⛏️</div>
         <div class="post-card-content">
-          <h3>MC jvav 玩家 & MC 萌新</h3>
-          <p>一边说着"我开的是jvav"，一边在基岩版里迷路。</p>
+          <h3> MC 萌新</h3>
+          <p>“大佬，这个下届合金锭怎么用啊”</p>
         </div>
       </div>
 
@@ -162,7 +154,7 @@ comments_mode: public
         <div class="post-card-icon">🐧</div>
         <div class="post-card-content">
           <h3>Arch Linux 用户</h3>
-          <p>"我用 Arch，我骄傲"（虽然三天重装一次）。</p>
+          <p>"I use Arch, btw"（“无法解决所有依赖关系”）</p>
         </div>
       </div>
 
@@ -170,15 +162,15 @@ comments_mode: public
         <div class="post-card-icon">💬</div>
         <div class="post-card-content">
           <h3>偶尔已读乱回选手</h3>
-          <p>不是没看到，是真的在乱回。</p>
+          <p>“[未读 99+]”</p>
         </div>
       </div>
 
       <div class="post-card">
         <div class="post-card-icon">🧱</div>
         <div class="post-card-content">
-          <h3>网页砖家 & Node.js & Docker</h3>
-          <p>砌砖我们是认真的——从 HTML 一路砌到容器化部署。</p>
+          <h3>网页砖家</h3>
+          <p>“能跑就行”</p>
         </div>
       </div>
     </div>
@@ -189,9 +181,9 @@ comments_mode: public
 
     <blockquote class="post-blockquote post-blockquote-highlight">
       <p>哦对了，差点忘了说——</p>
-      <p><strong>"工作室"招人，什么人都收！</strong></p>
-      <p>不会代码？会撸猫也行。</p>
-      <p>不会撸猫？会已读不回也算一技之长。</p>
+      <p><strong>"工作室"招人，什么都不收！</strong></p>
+      <p>只要会撸猫就行（</p>
+      <p>不会？会已读不回也算一技之长。</p>
       <p><s>那bro的"工作室"资源很稀缺了</s>（确信）</p>
     </blockquote>
   </section>
@@ -199,8 +191,8 @@ comments_mode: public
   <footer class="post-footer">
     <hr class="post-divider" />
     <p class="post-footer-note">
-      <em>最后，如果你读到了这里，那我们就是朋友了（大概）。</em><br />
-      <em>欢迎来撩，或者来一起撸猫。</em>
+      <em>最后，如果你读到了这里，那我们就不是朋友了（大概）。</em><br />
+      <em>这里是BetaStudio2，很不高兴认识你（</em>
     </p>
     <p class="post-copyright">本文为个人简介，版权所有 &copy; BetaStudio2</p>
   </footer>

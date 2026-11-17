@@ -36,7 +36,6 @@ export interface ArticleMeta {
   reading_time_minutes?: number
   word_count_estimate?: number
   sections?: Section[]
-  highlights?: string[]
   references?: Reference[]
 }
 

@@ -1,7 +1,7 @@
 ---
 id: author-notes
-title: 作者想说：从本地编辑器到一座小站
-subtitle: 关于 WebWord 的前世今生——一次从私人工具到公共站点的蜕变记录
+title: Archoera 的碎碎念
+subtitle: 站点的前世今生——一次从私人工具到公共站点的蜕变记录
 category: 介绍/开发日记/作者想说
 tags:
   - 开发日记
@@ -24,10 +24,10 @@ created: '2026-07-20'
 updated: '2026-07-20'
 published_at: '2026-07-20T00:00:00+08:00'
 description: >-
-  BetaStudio2 讲述 WebWord 从本地编辑器到全栈站点的蜕变历程——从纯前端单页到 Vue 3 + Express +
+  BetaStudio2 讲述站点从本地编辑器到全栈站点的蜕变历程——从纯前端单页到 Vue 3 + Express +
   SQLite，从私人笔记到公开站点。
 summary: >-
-  WebWord 的前身是一个纯浏览器端的本地编辑器（字体切换、Markdown、Live2D、插件市场、模板库等），后经 Vue 3 +
+  站点的前身是一个纯浏览器端的本地编辑器（字体切换、Markdown、Live2D、插件市场、模板库等），后经 Vue 3 +
   TypeScript 重构，接入 Express + SQLite
   后端，成为现在所见的多用户文档站点。本文记录了这段从“被废弃的项目改造品”到完整站点的过程。
 cover: null
@@ -71,12 +71,6 @@ key_facts:
     - 提案
     - PRD
     - 周报
-highlights:
-  - 从纯前端本地编辑器到全栈站点
-  - Vue 3 + TypeScript 工程化重构
-  - Express + SQLite 后端支撑账户与文档服务
-  - 8 个官方插件 + 多类模板库
-  - 从“被废弃项目”到重新发布
 sections:
   - id: opening
     title: 开场
@@ -325,7 +319,7 @@ word_count_estimate: 900
 }
 </style>
 
-<article class="blog-post" data-title="作者想说：从本地编辑器到一座小站">
+<article class="blog-post" data-title="Archoera 的碎碎念">
 
   <header class="post-header">
     <p class="post-meta">
@@ -335,7 +329,7 @@ word_count_estimate: 900
       <span> · </span>
       <span class="post-author" data-author-uuid="30be-c219-f6fb-1356">BetaStudio2</span>
     </p>
-    <h1 class="post-title">作者想说：从本地编辑器到一座小站</h1>
+    <h1 class="post-title">Archoera 的碎碎念</h1>
     <p class="post-lead">
       写代码、写文案这件事，从一开始就是给自己找的——一块在无数次实验、无数次推翻之后，还能保持运转的小角落。
     </p>
@@ -438,13 +432,14 @@ word_count_estimate: 900
   </section>
 
   <section class="post-section">
-    <h2>前身：一个"被废弃"项目的改造品</h2>
+    <h2>一个"被废弃"项目的改造品</h2>
     <p>
-      如果往回翻一翻，你会发现这个站点的前身其实是一个所谓被"废弃"的项目的改造品罢了，虽然它仍然是不完美的。
+      实际上，如你所见，这个站点的前身其实是一个所谓被"废弃"的项目的改造品罢了……
+      本来，它应该服役于之前的另一个项目，用来展示想法、文案、以及网页一贯的强大拓展能力……
       那是一个完全跑在浏览器里的本地编辑器：字体切换、Markdown 渲染、Live2D、插件市场、模板库、任务视图、音乐盒——所有能折腾的东西，几乎都被我塞进去了。
     </p>
 
-    <p>细看下来，光是官方插件就能数出一长串：</p>
+    <p>细看下来，光是插件就能数出一长串：</p>
     <div class="post-tag-cloud">
       <span class="post-tag">常数查询</span>
       <span class="post-tag">化学元素周期表</span>
@@ -456,14 +451,13 @@ word_count_estimate: 900
       <span class="post-tag">公式计算</span>
     </div>
     <p>
-      每加一个，都要在不破坏既有结构的前提下，安插进一个原本没设计扩展点的内核里。
-      模板库也是，从日记、笔记、心得这种日常写作用的轻量模板，到合同、提案、PRD、周报这种偏向正式文档的模板，一点一点往上堆。
-      功能堆得再多，回头看也不过是一件陪我熬日子的工具。
+      模板库也是，从日记这种日常写作用的轻量模板，到周报这种偏向正式文档的模板，一点一点往上堆。
+      功能堆得再多，回头看也不过是一件陪我熬日子的工具，而实际也确实用不上……
     </p>
   </section>
 
   <section class="post-section">
-    <h2>蜕变：从单页到全栈</h2>
+    <h2>从单页到全栈</h2>
 
     <p>
       它陪我度过了很长一段从研究课题到日常写作的过渡期，也见证了无数次"写到一半推翻重写"的惨案。
@@ -475,28 +469,28 @@ word_count_estimate: 900
       <div class="post-process-step">
         <div class="post-process-dot"></div>
         <div class="post-process-body">
-          <h4>拆解</h4>
+          <h4>拆</h4>
           <p>把那块本地编辑器拆开，留下内核。</p>
         </div>
       </div>
       <div class="post-process-step">
         <div class="post-process-dot"></div>
         <div class="post-process-body">
-          <h4>重构</h4>
+          <h4>构</h4>
           <p>从纯前端的单页，搬到了 <strong>Vue 3 + TypeScript</strong> 的工程结构上。</p>
         </div>
       </div>
       <div class="post-process-step">
         <div class="post-process-dot"></div>
         <div class="post-process-body">
-          <h4>接入</h4>
-          <p>在背后接上 <strong>Express</strong> 和 <strong>SQLite</strong>，撑起了账户、文档、回收站这些原本不存在的服务。</p>
+          <h4>接</h4>
+          <p>在背后接上 <strong>Express</strong> 和 <strong>SQLite</strong>，撑起了文档、回收站这些原本不存在的服务。</p>
         </div>
       </div>
       <div class="post-process-step">
         <div class="post-process-dot"></div>
         <div class="post-process-body">
-          <h4>裁剪</h4>
+          <h4>剪</h4>
           <p>一边拆，一边补，一边砍掉那些在多人场景下已经不合时宜的边角。</p>
         </div>
       </div>
@@ -511,7 +505,7 @@ word_count_estimate: 900
   <section class="post-section">
     <h2>内容的来处</h2>
     <p>
-      你能在这边读到的关于 Kimi K3、长程编程、长文档、心得笔记，几乎每一篇，最初都是在那块本地编辑器里被敲出来的。
+      你能在这边读到的几乎每一篇，最初都是在那块黑色的荧幕里被敲出来的。
       我只是把草稿箱、废稿箱、试验场，按主题重新整理了一遍，又加上了账户、搜索、导航、回收站这些"让站点像个站点"的零件。
     </p>
     <p>

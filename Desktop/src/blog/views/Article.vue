@@ -63,14 +63,6 @@
             <span v-for="tag in article.meta.tags" :key="tag" class="tag">{{ tag }}</span>
           </div>
 
-          <!-- Highlights -->
-          <div v-if="article.meta?.highlights?.length" class="article-highlights">
-            <h3 class="highlights-title">{{ $t('blog.highlightsTitle') }}</h3>
-            <ul class="highlights-list">
-              <li v-for="(h, i) in article.meta.highlights" :key="i">{{ h }}</li>
-            </ul>
-          </div>
-
           <!-- References -->
           <div v-if="article.meta?.references?.length" class="article-references">
             <h3 class="refs-title">{{ $t('blog.referencesTitle') }}</h3>
@@ -651,33 +643,6 @@ onUnmounted(() => {
   border: 1px solid rgba(66, 184, 131, .12);
 }
 
-// ── Highlights ──
-.article-highlights {
-  margin-top: 32px;
-  padding: 24px;
-  background: rgba(66, 184, 131, .04);
-  border: 1px solid rgba(66, 184, 131, .1);
-  border-radius: 10px;
-}
-
-.highlights-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #42b883;
-  margin-bottom: 12px;
-}
-
-.highlights-list {
-  padding-left: 20px;
-
-  li {
-    font-size: 14px;
-    color: rgba(255, 255, 255, .6);
-    margin-bottom: 6px;
-    line-height: 1.5;
-  }
-}
-
 // ── References ──
 .article-references {
   margin-top: 32px;
@@ -843,13 +808,8 @@ onUnmounted(() => {
   }
 
   .article-tags,
-  .article-highlights,
   .article-references {
     margin-top: 28px;
-  }
-
-  .article-highlights {
-    padding: 16px;
   }
 
   .loading-state,

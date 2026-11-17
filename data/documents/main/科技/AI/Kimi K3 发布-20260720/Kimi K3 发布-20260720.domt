@@ -84,14 +84,6 @@ key_facts:
     input_cached: 0.3
     input_uncached: 3
     output: 15
-highlights:
-  - 全球首个开源的 3T 级大模型
-  - 896 专家 / 激活 16 个的极稀疏 MoE
-  - KDA 混合线性注意力 + Attention Residuals 双架构重写
-  - 原生视觉理解，100 万 token 上下文
-  - Frontend Code Arena 1679 分登顶
-  - Artificial Analysis 综合智能指数 57 分（全球第三）
-  - 完整模型权重 7 月 27 日前开源
 sections:
   - id: intro
     title: 为什么是 K3？
