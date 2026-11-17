@@ -190,6 +190,11 @@ async function ensureArticleImagesReady() {
   const pending: Promise<unknown>[] = []
   root.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach(img => {
     if (img.complete) return
+    // 已有显式宽高时浏览器会按属性预留比例，图片晚到也不会改变布局
+    if (img.getAttribute('width') && img.getAttribute('height')) {
+      img.loading = 'eager'
+      return
+    }
     img.loading = 'eager'
     pending.push(new Promise<void>(resolve => {
       img.addEventListener('load', () => resolve(), { once: true })
