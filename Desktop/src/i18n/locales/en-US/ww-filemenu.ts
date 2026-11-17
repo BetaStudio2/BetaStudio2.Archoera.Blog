@@ -43,8 +43,6 @@ export default {
   'wwf.options.autoSaveTitle': 'AutoSave Interval',
   'wwf.options.autoSaveDesc': 'How often documents are saved automatically (in minutes)',
   'wwf.options.minutes': '{count} min',
-  'wwf.options.spellCheckTitle': 'Spell Check',
-  'wwf.options.spellCheckDesc': 'Check spelling errors automatically as you type',
   'wwf.options.rulerTitle': 'Show Ruler',
   'wwf.options.rulerDesc': 'Show horizontal and vertical rulers in the editing area',
   'wwf.options.gridlinesTitle': 'Show Gridlines',

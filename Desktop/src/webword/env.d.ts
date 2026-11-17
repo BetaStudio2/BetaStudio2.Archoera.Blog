@@ -6,11 +6,5 @@ declare module '*.vue' {
   export default component
 }
 
-declare global {
-  interface Window {
-    SPELL_DICT: Record<string, number>
-    SPELL_DICT_ZH: Record<string, number>
-  }
-}
 
 export {}

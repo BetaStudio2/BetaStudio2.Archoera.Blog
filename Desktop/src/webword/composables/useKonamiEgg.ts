@@ -92,7 +92,7 @@ function ensureKonamiStyle() {
   document.head.appendChild(style)
 }
 
-const WALLPAPERS = ['1.png', '2.png', '3.png', '4.png', '5.png']
+const WALLPAPERS = ['1.webp', '2.webp', '3.webp', '4.webp', '5.webp']
 
 /** 把背景样式写到 overlay 上 */
 function paintOverlay(el: HTMLElement, file: string) {
