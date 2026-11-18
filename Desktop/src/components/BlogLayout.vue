@@ -33,12 +33,12 @@ vue 3.4.0</div>
         <router-link to="/blog/" class="header-brand">
           <span class="brand-icon">
             <svg viewBox="0 0 32 32" width="24" height="24">
-              <rect width="32" height="32" rx="6" fill="#42b883"/>
+              <rect width="32" height="32" rx="6" fill="#8b5cf6"/>
               <path d="M8 7a1.5 1.5 0 00-1.5 1.5v18A1.5 1.5 0 008 28h16a1.5 1.5 0 001.5-1.5V12l-5-5H8z" fill="#fff" opacity=".95"/>
-              <path d="M21 7v5h5" fill="none" stroke="#42b883" stroke-width="1.5" stroke-linejoin="round"/>
-              <rect x="11" y="16" width="10" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
-              <rect x="11" y="20" width="7" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
-              <rect x="11" y="24" width="8.5" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
+              <path d="M21 7v5h5" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-linejoin="round"/>
+              <rect x="11" y="16" width="10" height="1.5" rx=".75" fill="#8b5cf6" opacity=".4"/>
+              <rect x="11" y="20" width="7" height="1.5" rx=".75" fill="#8b5cf6" opacity=".4"/>
+              <rect x="11" y="24" width="8.5" height="1.5" rx=".75" fill="#8b5cf6" opacity=".4"/>
             </svg>
           </span>
           <span class="brand-text">BetaStudio2 小栈</span>
@@ -46,7 +46,11 @@ vue 3.4.0</div>
         <nav class="header-nav">
           <router-link to="/blog/" class="nav-link" active-class="nav-active" :exact="true">{{ $t('blog.home') }}</router-link>
           <router-link to="#" class="nav-link" @click.prevent="scrollToCategories">{{ $t('blog.navCategories') }}</router-link>
-          <a href="https://github.com/BetaStudio2" target="_blank" class="nav-link external" rel="noopener">
+          <router-link to="#" class="nav-link" @click.prevent="scrollToAbout">{{ $t('blog.navAbout') }}</router-link>
+          <button class="nav-icon-btn" :aria-label="$t('blog.search')" @click="focusSearch">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+          </button>
+          <a href="https://github.com/BetaStudio2" target="_blank" class="nav-link external nav-github" rel="noopener">
             GitHub
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
           </a>
@@ -63,9 +67,41 @@ vue 3.4.0</div>
       </router-view>
     </main>
 
+    <Transition name="float-fade">
+      <button v-if="showBackTop" class="back-to-top" :aria-label="$t('blog.backToTop')" @click="scrollToTop">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </Transition>
+
     <footer class="blog-footer">
       <div class="footer-inner">
-        <p>&copy; {{ new Date().getFullYear() }} BetaStudio2. Built with passion.</p>
+        <div class="footer-top">
+          <div class="footer-brand">
+            <router-link to="/blog/" class="footer-brand-link">
+              <span class="footer-brand-icon">
+                <svg viewBox="0 0 32 32" width="22" height="22"><rect width="32" height="32" rx="6" fill="#8b5cf6"/><path d="M8 7a1.5 1.5 0 00-1.5 1.5v18A1.5 1.5 0 008 28h16a1.5 1.5 0 001.5-1.5V12l-5-5H8z" fill="#fff" opacity=".95"/><path d="M21 7v5h5" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </span>
+              <span>BetaStudio2 小栈</span>
+            </router-link>
+            <p>{{ $t('blog.footerTagline') }}</p>
+          </div>
+          <div class="footer-col">
+            <h4>{{ $t('blog.footerNav') }}</h4>
+            <router-link to="/blog/">{{ $t('blog.home') }}</router-link>
+            <a href="#" @click.prevent="scrollToCategories">{{ $t('blog.navCategories') }}</a>
+            <a href="#" @click.prevent="scrollToAbout">{{ $t('blog.navAbout') }}</a>
+          </div>
+          <div class="footer-col">
+            <h4>{{ $t('blog.footerExplore') }}</h4>
+            <a href="https://github.com/BetaStudio2" target="_blank" rel="noopener">GitHub</a>
+            <a href="#" @click.prevent="focusSearch">{{ $t('blog.search') }}</a>
+            <a href="#" @click.prevent="scrollToTop">{{ $t('blog.backToTop') }}</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>&copy; {{ new Date().getFullYear() }} BetaStudio2. {{ $t('blog.footerMadeWith') }}.</span>
+          <span class="footer-status"><i></i> All systems operational</span>
+        </div>
       </div>
     </footer>
   </div>
@@ -73,12 +109,13 @@ vue 3.4.0</div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, nextTick, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import PerfCounter from '@/perfcounter/PerfCounter.vue'
 import { asset } from '@/utils/siteMode'
 
 const route = useRoute()
+const router = useRouter()
 const perfRef = ref<InstanceType<typeof PerfCounter> | null>(null)
 
 // Keyboard shortcut: Ctrl+Shift+P toggle PerfCounter
@@ -99,6 +136,7 @@ onUnmounted(() => {
 })
 
 const progressBarRef = ref<HTMLDivElement | null>(null)
+const showBackTop = ref(false)
 let loadingTimer: ReturnType<typeof setTimeout> | null = null
 
 function advanceBar(pct: number) {
@@ -127,6 +165,28 @@ function completeBar() {
   }, 200)
 }
 
+/** 回到顶部按钮：以 .blog-app 作为滚动容器 */
+function onBlogScroll() {
+  const el = document.querySelector<HTMLElement>('.blog-app')
+  showBackTop.value = !!el && el.scrollTop > 320
+}
+
+function scrollToTop() {
+  const el = document.querySelector<HTMLElement>('.blog-app')
+  if (el) el.scrollTo({ top: 0, behavior: 'smooth' })
+  else window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+onMounted(() => {
+  const el = document.querySelector<HTMLElement>('.blog-app')
+  if (el) el.addEventListener('scroll', onBlogScroll, { passive: true })
+})
+onUnmounted(() => {
+  const el = document.querySelector<HTMLElement>('.blog-app')
+  if (el) el.removeEventListener('scroll', onBlogScroll)
+  if (loadingTimer) clearTimeout(loadingTimer)
+})
+
 // Initial page load
 onMounted(() => {
   showBar()
@@ -136,6 +196,9 @@ onMounted(() => {
 // Route change loading
 watch(() => route.path, (newPath, oldPath) => {
   if (oldPath && newPath !== oldPath) {
+    // 路由切换后回到顶部，避免从列表中段点进文章时停在正文中部
+    const el = document.querySelector<HTMLElement>('.blog-app')
+    if (el) el.scrollTop = 0
     showBar()
     setTimeout(completeBar, 80)
   }
@@ -272,15 +335,35 @@ function scrollBottom() {
   }, 20)
 }
 
-function scrollToCategories() {
-  const el = document.querySelector('.category-section')
-  if (el) {
-    const container = document.querySelector('.blog-app')
-    if (container) {
-      const top = el.getBoundingClientRect().top + container.scrollTop - 70
-      container.scrollTo({ top, behavior: 'smooth' })
-    }
+function scrollToSection(selector: string) {
+  const el = document.querySelector(selector)
+  if (!el) return
+  const container = document.querySelector('.blog-app')
+  if (container) {
+    const top = el.getBoundingClientRect().top + container.scrollTop - 76
+    container.scrollTo({ top, behavior: 'smooth' })
+  } else {
+    el.scrollIntoView({ behavior: 'smooth' })
   }
+}
+
+function scrollToCategories() {
+  scrollToSection('.category-section')
+}
+
+function scrollToAbout() {
+  if (route.name !== 'blog-home') {
+    router.push('/blog/').then(() => setTimeout(() => scrollToSection('.about-section'), 350))
+  } else {
+    scrollToSection('.about-section')
+  }
+}
+
+/** 顶栏/页脚的搜索入口：回到首页并聚焦搜索框 */
+async function focusSearch() {
+  if (route.name !== 'blog-home') await router.push('/blog/')
+  await nextTick()
+  setTimeout(() => window.dispatchEvent(new CustomEvent('blog:focus-search')), 120)
 }
 
 onMounted(() => {
@@ -299,13 +382,13 @@ onMounted(() => {
   justify-content: center;
   background:
     /* Dot grid */
-    radial-gradient(circle, rgba(66, 184, 131, .07) 1px, transparent 1px),
+    radial-gradient(circle, rgba(139, 92, 246, .07) 1px, transparent 1px),
     /* Center glow */
-    radial-gradient(ellipse at 50% 50%, rgba(66, 184, 131, .08) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, .08) 0%, transparent 60%),
     /* Top-left highlight */
-    radial-gradient(ellipse 500px 400px at 15% 20%, rgba(66, 184, 131, .06) 0%, transparent 60%),
+    radial-gradient(ellipse 500px 400px at 15% 20%, rgba(139, 92, 246, .06) 0%, transparent 60%),
     /* Bottom-right accent */
-    radial-gradient(ellipse 400px 300px at 85% 80%, rgba(34, 211, 238, .05) 0%, transparent 60%),
+    radial-gradient(ellipse 400px 300px at 85% 80%, rgba(99, 102, 241, .05) 0%, transparent 60%),
     #0b0b14;
   background-size: 28px 28px, 100% 100%, 100% 100%, 100% 100%, auto;
   background-repeat: repeat, no-repeat, no-repeat, no-repeat, no-repeat;
@@ -316,7 +399,7 @@ onMounted(() => {
     pointer-events: none;
     z-index: 0;
     inset: 0;
-    border: 1px solid rgba(66, 184, 131, .04);
+    border: 1px solid rgba(139, 92, 246, .04);
     border-radius: 0;
   }
 
@@ -328,7 +411,7 @@ onMounted(() => {
     left: 50px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 56px;
-    color: rgba(66, 184, 131, .12);
+    color: rgba(139, 92, 246, .12);
     letter-spacing: 6px;
     pointer-events: none;
     line-height: 1;
@@ -343,7 +426,7 @@ onMounted(() => {
   right: 60px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
-  color: rgba(66, 184, 131, .12);
+  color: rgba(139, 92, 246, .12);
   pointer-events: none;
   text-align: right;
   line-height: 1.8;
@@ -358,7 +441,7 @@ onMounted(() => {
   left: 40px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 36px;
-  color: rgba(66, 184, 131, .08);
+  color: rgba(139, 92, 246, .08);
   pointer-events: none;
   transform: translateY(-50%);
   line-height: 1.4;
@@ -367,14 +450,14 @@ onMounted(() => {
 .splash-terminal {
   width: 660px;
   max-width: 92vw;
-  border: 1px solid rgba(66, 184, 131, .2);
+  border: 1px solid rgba(139, 92, 246, .2);
   border-radius: 10px;
   overflow: hidden;
   background: #000;
   box-shadow:
-    0 0 4px rgba(66, 184, 131, .08),
-    0 0 20px rgba(66, 184, 131, .06),
-    0 0 80px rgba(66, 184, 131, .03),
+    0 0 4px rgba(139, 92, 246, .08),
+    0 0 20px rgba(139, 92, 246, .06),
+    0 0 80px rgba(139, 92, 246, .03),
     inset 0 0 30px rgba(0, 0, 0, .5);
   position: relative;
 }
@@ -400,8 +483,8 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  background: linear-gradient(180deg, rgba(66, 184, 131, .07), rgba(66, 184, 131, .03));
-  border-bottom: 1px solid rgba(66, 184, 131, .1);
+  background: linear-gradient(180deg, rgba(139, 92, 246, .07), rgba(139, 92, 246, .03));
+  border-bottom: 1px solid rgba(139, 92, 246, .1);
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
   position: relative;
   z-index: 3;
@@ -435,7 +518,7 @@ onMounted(() => {
 
 .splash-subtitle {
   font-size: 11px;
-  color: rgba(66, 184, 131, .5);
+  color: rgba(139, 92, 246, .5);
 }
 
 .splash-body {
@@ -475,8 +558,8 @@ onMounted(() => {
 
 .boot-line.info .boot-msg { color: #c0c0c0; }
 .boot-line.ok   .boot-msg {
-  color: #4ade80;
-  text-shadow: 0 0 6px rgba(74, 222, 128, .15);
+  color: #a78bfa;
+  text-shadow: 0 0 6px rgba(167, 139, 250, .15);
 }
 .boot-line.warn .boot-msg {
   color: #fbbf24;
@@ -486,13 +569,13 @@ onMounted(() => {
 /* Typing line gets a subtle glow */
 .typing {
   .boot-msg {
-    text-shadow: 0 0 4px rgba(74, 222, 128, .08);
+    text-shadow: 0 0 4px rgba(167, 139, 250, .08);
   }
 }
 
 .cursor {
-  color: #4ade80;
-  text-shadow: 0 0 8px rgba(74, 222, 128, .4);
+  color: #a78bfa;
+  text-shadow: 0 0 8px rgba(167, 139, 250, .4);
   animation: blink .6s step-end infinite;
 }
 
@@ -510,9 +593,9 @@ onMounted(() => {
 
 .boot-progress {
   height: 100%;
-  background: linear-gradient(90deg, #4ade80, #22d3ee);
+  background: linear-gradient(90deg, #a78bfa, #6366f1);
   transition: width .2s ease;
-  box-shadow: 0 0 8px rgba(74, 222, 128, .2);
+  box-shadow: 0 0 8px rgba(167, 139, 250, .2);
 }
 
 .splash-fade-enter-active { transition: opacity .4s ease; }
@@ -550,9 +633,9 @@ onMounted(() => {
     /* Dot grid */
     radial-gradient(circle, rgba(255, 255, 255, .04) 1px, transparent 1px),
     /* Green glow top-left */
-    radial-gradient(ellipse 800px 500px at 0% 0%, rgba(66, 184, 131, .08) 0%, transparent 70%),
+    radial-gradient(ellipse 800px 500px at 0% 0%, rgba(139, 92, 246, .08) 0%, transparent 70%),
     /* Small glow top-right */
-    radial-gradient(ellipse 400px 300px at 80% 10%, rgba(66, 184, 131, .05) 0%, transparent 70%);
+    radial-gradient(ellipse 400px 300px at 80% 10%, rgba(139, 92, 246, .05) 0%, transparent 70%);
   background-size: 32px 32px, 100% 100%, 100% 100%;
   background-repeat: repeat, no-repeat, no-repeat;
 }
@@ -639,10 +722,18 @@ onMounted(() => {
   transform: translateY(-6px);
 }
 
-/* ── Glass Variables ── */
+/* ── Design Tokens ── */
 .blog-app {
-  --glass-border: rgba(66, 184, 131, .30);
-  --glass-shadow: 0 24px 72px rgba(0, 0, 0, .38), 0 0 42px rgba(66, 184, 131, .06), inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 -28px 64px rgba(0, 0, 0, .14);
+  --accent: #8b5cf6;
+  --accent-2: #6366f1;
+  --text: #e1e4ea;
+  --text-dim: rgba(255, 255, 255, .52);
+  --text-faint: rgba(255, 255, 255, .34);
+  --surface: rgba(255, 255, 255, .03);
+  --surface-hover: rgba(255, 255, 255, .055);
+  --border: rgba(255, 255, 255, .06);
+  --glass-border: rgba(139, 92, 246, .30);
+  --glass-shadow: 0 24px 72px rgba(0, 0, 0, .38), 0 0 42px rgba(139, 92, 246, .06), inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 -28px 64px rgba(0, 0, 0, .14);
 }
 
 /* ── Header *with high-contrast glass effect ── */
@@ -671,8 +762,8 @@ onMounted(() => {
   height: 100%;
   width: 0%;
   opacity: 0;
-  background: linear-gradient(90deg, #42b883, #22d3ee);
-  box-shadow: 0 0 6px rgba(66, 184, 131, .4);
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  box-shadow: 0 0 6px rgba(139, 92, 246, .4);
 }
 
 .header-inner {
@@ -722,14 +813,45 @@ onMounted(() => {
   }
 
   &.nav-active {
-    color: #42b883;
-    background: rgba(66, 184, 131, .1);
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, .1);
   }
 
   &.external svg {
     display: inline;
     vertical-align: middle;
     margin-left: 2px;
+  }
+
+  &.nav-github {
+    border: 1px solid rgba(255, 255, 255, .08);
+    background: rgba(255, 255, 255, .03);
+
+    &:hover {
+      border-color: rgba(139, 92, 246, .3);
+      background: rgba(139, 92, 246, .08);
+      color: #fff;
+    }
+  }
+}
+
+.nav-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 0 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, .55);
+  transition: all .15s;
+
+  &:hover {
+    color: var(--accent);
+    background: rgba(139, 92, 246, .1);
+    border-color: rgba(139, 92, 246, .2);
   }
 }
 
@@ -738,19 +860,147 @@ onMounted(() => {
   flex: 1;
 }
 
+/* ── Back to top ── */
+.back-to-top {
+  position: fixed;
+  right: clamp(16px, 3vw, 36px);
+  bottom: 28px;
+  z-index: 90;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(139, 92, 246, .28);
+  background: linear-gradient(145deg, rgba(30, 41, 59, .95), rgba(15, 23, 36, .95));
+  color: var(--accent);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .4), 0 0 18px rgba(139, 92, 246, .08);
+  backdrop-filter: blur(8px);
+  transition: all .2s;
+
+  &:hover {
+    transform: translateY(-3px);
+    color: #fff;
+    background: rgba(139, 92, 246, .18);
+    border-color: rgba(139, 92, 246, .5);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .45), 0 0 24px rgba(139, 92, 246, .18);
+  }
+}
+
+.float-fade-enter-active,
+.float-fade-leave-active { transition: opacity .2s ease, transform .2s ease; }
+.float-fade-enter-from,
+.float-fade-leave-to { opacity: 0; transform: translateY(8px); }
+
 /* ── Footer ── */
 .blog-footer {
-  border-top: 1px solid rgba(255, 255, 255, .04);
-  padding: 24px;
-  margin-top: 80px;
+  position: relative;
+  margin-top: 96px;
+  padding: 56px 24px 28px;
+  border-top: 1px solid var(--border);
+  background:
+    radial-gradient(ellipse 600px 200px at 50% 0%, rgba(139, 92, 246, .05), transparent 70%),
+    rgba(0, 0, 0, .16);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: .5;
+  }
 }
 
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  text-align: center;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+}
+
+.footer-brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  transition: opacity .15s;
+
+  &:hover { opacity: .8; }
+}
+
+.footer-brand-icon { display: flex; }
+
+.footer-brand p {
+  margin-top: 12px;
   font-size: 13px;
-  color: rgba(255, 255, 255, .3);
+  line-height: 1.7;
+  color: var(--text-faint);
+  max-width: 280px;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+
+  h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .55);
+    margin-bottom: 4px;
+  }
+
+  a {
+    font-size: 13px;
+    color: var(--text-faint);
+    transition: color .15s, transform .15s;
+
+    &:hover {
+      color: var(--accent);
+      transform: translateX(2px);
+    }
+  }
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: rgba(255, 255, 255, .26);
+}
+
+.footer-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'JetBrains Mono', monospace;
+
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #a78bfa;
+    box-shadow: 0 0 8px rgba(167, 139, 250, .6);
+  }
 }
 
 /* ── Utility ── */
@@ -777,6 +1027,19 @@ onMounted(() => {
     white-space: nowrap;
   }
 
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .back-to-top {
+    margin-right: 16px;
+  }
+
   .container {
     padding: 0 16px;
   }
@@ -795,6 +1058,22 @@ onMounted(() => {
   .nav-link {
     padding: 6px 8px;
     font-size: 12.5px;
+  }
+
+  .nav-icon-btn {
+    width: 28px;
+    height: 28px;
+    margin: 0 2px;
+  }
+
+  .footer-top {
+    gap: 20px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .container {

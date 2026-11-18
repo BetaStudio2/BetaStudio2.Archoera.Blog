@@ -27,6 +27,11 @@
             <span v-if="categoryParts.length > 1" class="breadcrumb-current">{{ categoryParts.slice(1).join(' / ') }}</span>
           </div>
 
+          <div class="article-kicker">
+            <span class="kicker-line"></span>
+            ARTICLE
+            <span v-if="article.meta?.category" class="kicker-category">/ {{ categoryParts.join(' / ') }}</span>
+          </div>
           <h1 class="article-title">{{ article.title }}</h1>
           <p v-if="article.meta?.subtitle" class="article-subtitle">{{ article.meta.subtitle }}</p>
 
@@ -46,6 +51,14 @@
           </div>
         </div>
       </header>
+
+      <!-- Cover banner -->
+      <div v-if="coverUrl" class="container cover-wrap">
+        <div class="article-cover">
+          <img :src="coverUrl" :alt="article.title" />
+          <div class="cover-fade"></div>
+        </div>
+      </div>
 
       <!-- Article Content -->
       <div class="container article-layout">
@@ -76,11 +89,44 @@
             </ol>
           </div>
 
+          <div class="article-end"><span>// END OF ARTICLE</span></div>
+
+          <!-- Author card -->
+          <div v-if="author" class="author-card">
+            <div class="author-avatar-wrap">
+              <img :src="author.avatar || defaultAvatar" :alt="author.display_name" class="author-card-avatar" />
+            </div>
+            <div class="author-card-info">
+              <span class="author-card-label">{{ $t('blog.authorTagline') }}</span>
+              <h4>{{ author.display_name }}</h4>
+            </div>
+            <a href="https://github.com/BetaStudio2" target="_blank" rel="noopener" class="author-card-link">
+              GitHub
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+            </a>
+          </div>
+
+          <!-- Prev / Next -->
+          <div v-if="prevArticle || nextArticle" class="post-nav">
+            <button v-if="prevArticle" class="post-nav-item prev" @click="openArticle(prevArticle)">
+              <span class="post-nav-label">← {{ $t('blog.prevArticle') }}</span>
+              <span class="post-nav-title">{{ prevArticle.title }}</span>
+            </button>
+            <button v-if="nextArticle" class="post-nav-item next" @click="openArticle(nextArticle)">
+              <span class="post-nav-label">{{ $t('blog.nextArticle') }} →</span>
+              <span class="post-nav-title">{{ nextArticle.title }}</span>
+            </button>
+          </div>
+
         </article>
 
         <!-- Sidebar: Table of Contents -->
         <aside class="article-sidebar" v-if="toc.length">
-          <h4 class="toc-title">{{ $t('blog.tocTitle') }}</h4>
+          <div class="toc-heading">
+            <h4 class="toc-title">{{ $t('blog.tocTitle') }}</h4>
+            <span class="toc-percent">{{ readPct }}%</span>
+          </div>
+          <div class="toc-progress"><div class="toc-progress-bar" :style="{ width: readPct + '%' }"></div></div>
           <nav class="toc-nav">
             <a
               v-for="(item, i) in toc"
@@ -95,6 +141,32 @@
           </nav>
         </aside>
       </div>
+
+      <!-- Related posts -->
+      <div v-if="relatedArticles.length" class="container related-section">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">KEEP READING</div>
+            <h2 class="section-title">{{ $t('blog.relatedPosts') }}</h2>
+          </div>
+        </div>
+        <div class="related-grid">
+          <article v-for="item in relatedArticles" :key="item.path" class="related-card" @click="openArticle(item)">
+            <div class="related-cover">
+              <img v-if="item.cover" :src="itemCoverUrl(item)" :alt="item.title" />
+              <div v-else class="related-fallback">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+                <span>{{ item.category.split('/')[0] }}</span>
+              </div>
+            </div>
+            <div class="related-body">
+              <span class="related-cat">{{ item.category.split('/')[0] }}</span>
+              <h3>{{ item.title }}</h3>
+              <span class="related-date">{{ formatListDate(item.created) }}</span>
+            </div>
+          </article>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -104,18 +176,22 @@ import { ref, computed, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api } from '@/blog/services/api'
-import { STATIC_MODE } from '@/utils/siteMode'
+import { useBlogStore, type ArticleListItem } from '@/blog/stores/blog'
+import { STATIC_MODE, withBase, asset } from '@/utils/siteMode'
 import type { ArticleResponse } from '@/blog/types'
 
 const route = useRoute()
 const router = useRouter()
+const store = useBlogStore()
 const { t, locale } = useI18n()
 const contentRef = ref<HTMLElement | null>(null)
+const defaultAvatar = asset('images/about-cover.jpg')
 
 const article = ref<ArticleResponse | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 const activeToc = ref('')
+const readPct = ref(0)
 
 // GitHub Pages 会把 /blog/article/xxx 301 到 /blog/article/xxx/，
 // 使 path 参数末尾多一个斜杠；统一去掉，保证能和导出数据里的路径对上
@@ -161,6 +237,56 @@ const toc = computed<TocItem[]>(() => {
     text: s.title
   }))
 })
+
+/** 文章封面横幅：优先 cover，缺省时回退正文第一张图片资源 */
+const coverUrl = computed(() => {
+  const meta = article.value?.meta
+  const coverAsset = Array.isArray(meta?.assets)
+    ? meta.assets.find(a => a && a.type === 'image' && a.path)
+    : null
+  const cover = meta?.cover || coverAsset?.path
+  if (!cover) return ''
+  if (/^https?:\/\//i.test(cover)) return cover
+  if (cover.startsWith('/static/') || cover.startsWith('/background/')) return withBase(cover)
+  if (STATIC_MODE) {
+    const seg = articlePath.value.split('/').map(encodeURIComponent).join('/')
+    return withBase(`/static/documents/${seg}/${cover}`)
+  }
+  const base = `/documents/category-files/${encodeURI(articlePath.value)}`
+  return `${base}/${cover.split('/').map(encodeURIComponent).join('/')}`
+})
+
+/** 按发布时间排序的全局文章列表，用于上一篇 / 下一篇 / 相关文章 */
+const sortedArticles = computed<ArticleListItem[]>(() => {
+  return [...store.flattenArticles()].sort((a, b) => b.created.localeCompare(a.created))
+})
+const currentIndex = computed(() => sortedArticles.value.findIndex(a => a.path === articlePath.value))
+const prevArticle = computed(() => currentIndex.value > 0 ? sortedArticles.value[currentIndex.value - 1] : null)
+const nextArticle = computed(() => currentIndex.value >= 0 ? sortedArticles.value[currentIndex.value + 1] || null : null)
+const relatedArticles = computed<ArticleListItem[]>(() => {
+  const list = sortedArticles.value.filter(a => a.path !== articlePath.value)
+  const cat = String(article.value?.meta?.category || '').split('/')[0]
+  const same = list.filter(a => a.category.split('/')[0] === cat)
+  const others = list.filter(a => a.category.split('/')[0] !== cat)
+  return [...same, ...others].slice(0, 3)
+})
+
+function openArticle(item: ArticleListItem) {
+  router.push(`/blog/article/${item.path}`)
+}
+
+function formatListDate(date: string): string {
+  if (!date) return ''
+  const d = new Date(date)
+  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`
+}
+
+function itemCoverUrl(item: ArticleListItem): string {
+  if (!item.cover) return ''
+  if (STATIC_MODE) return withBase(item.cover)
+  const base = `/documents/category-files/${item.path.split('/').map(encodeURIComponent).join('/')}`
+  return `${base}/${item.cover.split('/').map(encodeURIComponent).join('/')}`
+}
 
 function handleContentClick(e: MouseEvent) {
   const target = e.target as HTMLElement
@@ -243,11 +369,15 @@ function goBack() {
 }
 
 function onScroll() {
-  if (tocScrollLock) return
-  if (!toc.value.length) return
   // 以 .blog-app 滚动容器为坐标基准（而非浏览器视口），
   // 否则窗口在桌面中的位置会导致 TOC 高亮产生像素级偏差。
-  const container = document.querySelector('.blog-app')
+  const container = document.querySelector<HTMLElement>('.blog-app')
+  if (container) {
+    const max = container.scrollHeight - container.clientHeight
+    readPct.value = max > 0 ? Math.min(100, Math.round((container.scrollTop / max) * 100)) : 0
+  }
+  if (tocScrollLock) return
+  if (!toc.value.length) return
   const baseTop = container ? container.getBoundingClientRect().top : 0
   const headings = toc.value.map(t => {
     const el = document.getElementById(t.href.replace('#', ''))
@@ -286,6 +416,9 @@ async function init() {
   try {
     const path = articlePath.value
     if (!path) throw new Error(t('blog.invalidArticlePath'))
+    if (!store.categories.length) {
+      try { await store.fetchCategories() } catch { /* 上下篇导航为可选增强，不阻断正文 */ }
+    }
     const res = await api.getCategoryContent(path)
     article.value = res
   } catch (e: any) {
@@ -334,38 +467,9 @@ onUnmounted(() => {
 .article-header {
   padding: 48px 0 40px;
   position: relative;
-  background: radial-gradient(ellipse at 50% 0%, rgba(66, 184, 131, .06) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(139, 92, 246, .06) 0%, transparent 60%);
   border-bottom: 1px solid rgba(255, 255, 255, .04);
   overflow: hidden;
-}
-
-/* Decorative floating elements */
-.article-header::before {
-  content: '</>';
-  position: absolute;
-  right: 8%;
-  top: 20%;
-  font-size: 100px;
-  font-weight: 900;
-  font-family: 'JetBrains Mono', monospace;
-  color: rgba(66, 184, 131, .09);
-  line-height: 1;
-  user-select: none;
-  pointer-events: none;
-}
-
-.article-header::after {
-  content: '{}';
-  position: absolute;
-  left: 5%;
-  bottom: 10%;
-  font-size: 64px;
-  font-weight: 900;
-  font-family: 'JetBrains Mono', monospace;
-  color: rgba(56, 132, 255, .07);
-  line-height: 1;
-  user-select: none;
-  pointer-events: none;
 }
 
 .header-top {
@@ -402,7 +506,7 @@ onUnmounted(() => {
 .breadcrumb-link {
   color: rgba(255, 255, 255, .4);
   transition: color .15s;
-  &:hover { color: #42b883; }
+  &:hover { color: #8b5cf6; }
 }
 
 .breadcrumb-sep {
@@ -411,6 +515,28 @@ onUnmounted(() => {
 
 .breadcrumb-current {
   color: rgba(255, 255, 255, .3);
+}
+
+.article-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(139, 92, 246, .8);
+  font-family: 'JetBrains Mono', monospace;
+
+  .kicker-line {
+    width: 24px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+
+  .kicker-category { color: rgba(255, 255, 255, .3); }
 }
 
 .article-title {
@@ -460,6 +586,35 @@ onUnmounted(() => {
   svg { opacity: .5; }
 }
 
+// ── Cover banner ──
+.cover-wrap {
+  padding-top: 32px;
+}
+
+.article-cover {
+  position: relative;
+  aspect-ratio: 2.4 / 1;
+  max-height: 420px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(139, 92, 246, .14);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.cover-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(11, 11, 20, .55));
+  pointer-events: none;
+}
+
 // ── Layout ──
 /* 正文页比首页/分类更宽：单独放大容器，正文列放宽到 1000px */
 .article-header .header-content,
@@ -503,13 +658,40 @@ onUnmounted(() => {
   }
 }
 
+.toc-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
 .toc-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: rgba(255, 255, 255, .3);
+  color: rgba(255, 255, 255, .4);
   text-transform: uppercase;
-  letter-spacing: .05em;
-  margin-bottom: 12px;
+  letter-spacing: .08em;
+}
+
+.toc-percent {
+  font-size: 11px;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.toc-progress {
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .06);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.toc-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 2px;
+  transition: width .15s linear;
 }
 
 .toc-nav {
@@ -531,8 +713,9 @@ onUnmounted(() => {
   }
 
   &.toc-active {
-    color: #42b883;
-    background: rgba(66, 184, 131, .06);
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, .08);
+    box-shadow: inset 2px 0 0 var(--accent);
   }
 }
 
@@ -572,7 +755,7 @@ onUnmounted(() => {
   }
 
   a {
-    color: #42b883;
+    color: #8b5cf6;
     text-decoration: underline;
     text-underline-offset: 2px;
     transition: opacity .15s;
@@ -586,7 +769,7 @@ onUnmounted(() => {
   }
 
   blockquote {
-    border-left: 3px solid rgba(66, 184, 131, .3);
+    border-left: 3px solid rgba(139, 92, 246, .3);
     padding: 12px 20px;
     margin: 1.5em 0;
     background: rgba(255, 255, 255, .02);
@@ -685,9 +868,9 @@ onUnmounted(() => {
   margin: 0 4px 4px 0;
   border-radius: 4px;
   font-size: 12px;
-  background: rgba(66, 184, 131, .08);
-  color: #42b883;
-  border: 1px solid rgba(66, 184, 131, .12);
+  background: rgba(139, 92, 246, .08);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, .12);
 }
 
 // ── References ──
@@ -716,13 +899,256 @@ onUnmounted(() => {
     transition: color .15s;
 
     &:hover {
-      color: #42b883;
+      color: #8b5cf6;
     }
   }
 
   .ref-publisher {
     color: rgba(255, 255, 255, .25);
   }
+}
+
+// ── End mark ──
+.article-end {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 56px 0 40px;
+  color: rgba(139, 92, 246, .45);
+  font-size: 10px;
+  letter-spacing: .2em;
+  font-family: 'JetBrains Mono', monospace;
+
+  &::before,
+  &::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, transparent, rgba(139, 92, 246, .2));
+  }
+  &::after { background: linear-gradient(90deg, rgba(139, 92, 246, .2), transparent); }
+  span { margin: 0 16px; }
+}
+
+// ── Author card ──
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(139, 92, 246, .16);
+  background: linear-gradient(135deg, rgba(139, 92, 246, .06), rgba(255, 255, 255, .015));
+}
+
+.author-avatar-wrap { flex-shrink: 0; }
+
+.author-card-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, .14);
+  background: #0d141f;
+}
+
+.author-card-info {
+  flex: 1;
+  min-width: 0;
+
+  h4 { font-size: 15px; color: #fff; font-weight: 700; }
+}
+
+.author-card-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-bottom: 3px;
+}
+
+.author-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  font-size: 12px;
+  color: var(--text-dim);
+  transition: all .15s;
+
+  &:hover {
+    color: var(--accent);
+    border-color: rgba(139, 92, 246, .35);
+    background: rgba(139, 92, 246, .06);
+  }
+}
+
+// ── Prev / Next ──
+.post-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.post-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, .02);
+  text-align: left;
+  transition: all .2s;
+
+  &:hover {
+    border-color: rgba(139, 92, 246, .3);
+    background: rgba(139, 92, 246, .05);
+    transform: translateY(-2px);
+    .post-nav-title { color: #fff; }
+  }
+
+  &.next { align-items: flex-end; text-align: right; }
+}
+
+.post-nav-label {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.post-nav-title {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color .2s;
+}
+
+// ── Related ──
+.related-section {
+  padding-top: 72px;
+}
+
+.section-kicker {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(139, 92, 246, .7);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 8px;
+}
+
+.section-header { margin-bottom: 20px; }
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 38px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #8b5cf6, transparent);
+  }
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.related-card {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, .02);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .2s;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: rgba(139, 92, 246, .3);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .25);
+
+    .related-cover img { transform: scale(1.05); }
+    .related-body h3 { color: var(--accent); }
+  }
+}
+
+.related-cover {
+  height: 110px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #14202a, #0d1119);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
+}
+
+.related-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(196, 181, 253, .45);
+
+  span {
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .3);
+  }
+}
+
+.related-body {
+  padding: 14px 16px;
+
+  h3 {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.5;
+    margin: 6px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color .2s;
+  }
+}
+
+.related-cat {
+  font-size: 10px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.related-date {
+  font-size: 11px;
+  color: rgba(255, 255, 255, .3);
+  font-family: 'JetBrains Mono', monospace;
 }
 
 // ── States ──
@@ -736,7 +1162,7 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   border: 2px solid rgba(255, 255, 255, .06);
-  border-top-color: #42b883;
+  border-top-color: #8b5cf6;
   border-radius: 50%;
   animation: spin .6s linear infinite;
 }
@@ -756,13 +1182,13 @@ onUnmounted(() => {
     padding: 8px 20px;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, .1);
-    color: #42b883;
+    color: #8b5cf6;
     font-size: 13px;
     transition: all .15s;
 
     &:hover {
-      background: rgba(66, 184, 131, .08);
-      border-color: rgba(66, 184, 131, .2);
+      background: rgba(139, 92, 246, .08);
+      border-color: rgba(139, 92, 246, .2);
     }
   }
 }
@@ -773,11 +1199,20 @@ onUnmounted(() => {
     padding: 28px 0 24px;
   }
 
-  // 装饰性 </> 与 {} 在窄屏会溢出，隐藏
-  .article-header::before,
-  .article-header::after {
-    display: none;
-  }
+  .article-kicker { margin-bottom: 10px; }
+
+  .cover-wrap { padding-top: 20px; }
+  .article-cover { height: 180px; border-radius: 12px; }
+
+  .author-card { padding: 16px; gap: 12px; }
+  .author-card-link { display: none; }
+
+  .post-nav { grid-template-columns: 1fr; gap: 10px; }
+  .post-nav-item.next { align-items: flex-start; text-align: left; }
+
+  .related-section { padding-top: 52px; }
+  .related-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .related-cover { height: 90px; }
 
   .header-top {
     margin-bottom: 12px;
@@ -869,6 +1304,9 @@ onUnmounted(() => {
   .article-header {
     padding: 20px 0 18px;
   }
+
+  .article-cover { height: 140px; }
+  .related-grid { grid-template-columns: 1fr; }
 
   .article-title {
     font-size: 20px;

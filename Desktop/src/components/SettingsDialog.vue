@@ -6,7 +6,7 @@
         <!-- 侧边栏 -->
         <aside class="settings-sidebar">
           <div class="sidebar-header">
-            <span class="sidebar-logo">B²</span>
+            <span class="sidebar-logo"><img :src="aboutCover" alt="BetaStudio2" /></span>
             <span class="sidebar-title">{{ $t('settings.title') }}</span>
           </div>
           <nav class="sidebar-nav">
@@ -130,7 +130,7 @@
     <!-- 侧边栏 -->
     <aside class="settings-sidebar">
       <div class="sidebar-header">
-        <span class="sidebar-logo">B²</span>
+        <span class="sidebar-logo"><img :src="aboutCover" alt="BetaStudio2" /></span>
         <span class="sidebar-title">{{ $t('settings.title') }}</span>
       </div>
       <nav class="sidebar-nav">
@@ -426,9 +426,12 @@ function onLive2DToggle() {
   .sidebar-logo {
     width: 28px; height: 28px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #667eea, #5568d3);
+    overflow: hidden;
+    background: rgba(255,255,255,.06);
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+
+    img { width: 100%; height: 100%; object-fit: cover; display: block; }
   }
   .sidebar-title {
     font-size: 13px; font-weight: 600;

@@ -5,12 +5,12 @@
         <router-link to="/" class="header-brand">
           <span class="brand-icon">
             <svg viewBox="0 0 32 32" width="24" height="24">
-              <rect width="32" height="32" rx="6" fill="#42b883"/>
+              <rect width="32" height="32" rx="6" fill="#8b5cf6"/>
               <path d="M8 7a1.5 1.5 0 00-1.5 1.5v18A1.5 1.5 0 008 28h16a1.5 1.5 0 001.5-1.5V12l-5-5H8z" fill="#fff" opacity=".95"/>
-              <path d="M21 7v5h5" fill="none" stroke="#42b883" stroke-width="1.5" stroke-linejoin="round"/>
-              <rect x="11" y="16" width="10" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
-              <rect x="11" y="20" width="7" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
-              <rect x="11" y="24" width="8.5" height="1.5" rx=".75" fill="#42b883" opacity=".4"/>
+              <path d="M21 7v5h5" fill="none" stroke="#8b5cf6" stroke-width="1.5" stroke-linejoin="round"/>
+              <rect x="11" y="16" width="10" height="1.5" rx=".75" fill="#8b5cf6" opacity=".4"/>
+              <rect x="11" y="20" width="7" height="1.5" rx=".75" fill="#8b5cf6" opacity=".4"/>
+              <rect x="11" y="24" width="8.5" height="1.5" rx=".75" fill="#8b5cf6" opacity=".4"/>
             </svg>
           </span>
           <span class="brand-text">BetaStudio2 小栈</span>
@@ -211,8 +211,8 @@ img {
   top: 0;
   z-index: 100;
   background: linear-gradient(112deg, rgba(28, 34, 48, .72), rgba(18, 22, 34, .74) 48%, rgba(8, 10, 18, .78));
-  border-bottom: 1px solid rgba(66, 184, 131, .30);
-  box-shadow: 0 22px 64px rgba(0, 0, 0, .30), 0 0 34px rgba(66, 184, 131, .05), inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 -24px 58px rgba(0, 0, 0, .16);
+  border-bottom: 1px solid rgba(139, 92, 246, .30);
+  box-shadow: 0 22px 64px rgba(0, 0, 0, .30), 0 0 34px rgba(139, 92, 246, .05), inset 0 1px 0 rgba(255, 255, 255, .14), inset 0 -24px 58px rgba(0, 0, 0, .16);
   backdrop-filter: blur(16px) saturate(1.3);
   -webkit-backdrop-filter: blur(16px) saturate(1.3);
 }
@@ -231,8 +231,8 @@ img {
   height: 100%;
   width: 0%;
   opacity: 0;
-  background: linear-gradient(90deg, #42b883, #22d3ee);
-  box-shadow: 0 0 6px rgba(66, 184, 131, .4);
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  box-shadow: 0 0 6px rgba(139, 92, 246, .4);
 }
 
 .header-inner {
@@ -282,8 +282,8 @@ img {
   }
 
   &.nav-active {
-    color: #42b883;
-    background: rgba(66, 184, 131, .1);
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, .1);
   }
 
   &.external svg {

@@ -30,36 +30,53 @@
               <span v-else class="breadcrumb-active">{{ part }}</span>
             </span>
           </div>
-          <h1 class="cat-title">{{ currentCategory?.name || pathParts[pathParts.length - 1] }}</h1>
+          <div class="section-kicker">// CATEGORY</div>
+          <div class="cat-title-row">
+            <h1 class="cat-title">{{ currentCategory?.name || pathParts[pathParts.length - 1] }}</h1>
+            <span class="cat-count-badge">{{ $t('blog.articleCount', { count: articles.length }) }}</span>
+          </div>
           <p v-if="currentCategory?.description" class="cat-desc">{{ currentCategory.description }}</p>
-          <p v-else class="cat-count">{{ $t('blog.articleCount', { count: articles.length }) }}</p>
         </div>
       </header>
 
       <!-- Sub-categories -->
-      <div v-if="currentCategory?.children?.length" class="container sub-categories">
-        <div
-          v-for="(sub, si) in currentCategory.children"
-          :key="sub.path"
-          class="sub-cat-card"
-          :style="{ animationDelay: `${si * 0.06}s` }"
-          @click="navigateTo(sub)"
-        >
-          <div class="sub-cat-icon">
-            <svg v-if="sub.type === 'folder'" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-            <svg v-else viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <div v-if="currentCategory?.children?.length" class="container sub-section">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">01 / DIRECTORIES</div>
+            <h2 class="section-title">{{ $t('blog.subCategories') }}</h2>
           </div>
-          <div class="sub-cat-info">
-            <span class="sub-cat-name">{{ sub.title || sub.name }}</span>
-            <span v-if="sub.description" class="sub-cat-desc">{{ sub.description }}</span>
+        </div>
+        <div class="sub-categories">
+          <div
+            v-for="(sub, si) in currentCategory.children"
+            :key="sub.path"
+            class="sub-cat-card"
+            :style="{ animationDelay: `${si * 0.06}s` }"
+            @click="navigateTo(sub)"
+          >
+            <div class="sub-cat-icon">
+              <svg v-if="sub.type === 'folder'" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+              <svg v-else viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="sub-cat-info">
+              <span class="sub-cat-name">{{ sub.title || sub.name }}</span>
+              <span v-if="sub.description" class="sub-cat-desc">{{ sub.description }}</span>
+            </div>
+            <svg class="sub-cat-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </div>
-          <svg class="sub-cat-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </div>
 
       <!-- Articles in this category -->
       <div v-if="articles.length" class="container articles-section">
-        <h2 class="section-title">{{ $t('blog.articlesTitle') }}</h2>
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">{{ currentCategory?.children?.length ? '02' : '01' }} / ARTICLES</div>
+            <h2 class="section-title">{{ $t('blog.articlesTitle') }}</h2>
+          </div>
+          <span class="articles-total">{{ $t('blog.articleCount', { count: articles.length }) }}</span>
+        </div>
         <div class="articles-list">
           <article
             v-for="(article, ai) in articles"
@@ -68,6 +85,7 @@
             :style="{ animationDelay: `${ai * 0.04}s` }"
             @click="openArticle(article)"
           >
+            <span class="row-index">{{ String(ai + 1).padStart(2, '0') }}</span>
             <div class="row-body">
               <h3 class="row-title">{{ article.title }}</h3>
               <p v-if="article.description" class="row-desc">{{ article.description }}</p>
@@ -78,7 +96,7 @@
                 </span>
               </div>
             </div>
-            <svg class="row-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg>
+            <svg class="row-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </article>
         </div>
       </div>
@@ -191,9 +209,68 @@ onMounted(init)
 
 // ── Header ──
 .category-header {
-  padding: 48px 0 40px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(66, 184, 131, .06) 0%, transparent 60%);
-  border-bottom: 1px solid rgba(255, 255, 255, .04);
+  position: relative;
+  padding: 52px 0 44px;
+  background:
+    radial-gradient(ellipse 500px 240px at 20% 0%, rgba(139, 92, 246, .1), transparent 70%),
+    radial-gradient(ellipse 360px 200px at 80% 20%, rgba(99, 102, 241, .05), transparent 70%);
+  border-bottom: 1px solid rgba(255, 255, 255, .05);
+  overflow: hidden;
+}
+
+.section-kicker {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(139, 92, 246, .7);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 8px;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 38px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #8b5cf6, transparent);
+  }
+}
+
+.cat-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.cat-count-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(139, 92, 246, .25);
+  background: rgba(139, 92, 246, .08);
+  color: var(--accent);
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .header-top {
@@ -230,7 +307,7 @@ onMounted(init)
 .breadcrumb-link {
   color: rgba(255, 255, 255, .4);
   transition: color .15s;
-  &:hover { color: #42b883; }
+  &:hover { color: #8b5cf6; }
 }
 
 .breadcrumb-sep {
@@ -264,30 +341,36 @@ onMounted(init)
 }
 
 // ── Sub Categories ──
+.sub-section {
+  padding-top: 40px;
+  padding-bottom: 8px;
+}
+
 .sub-categories {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 32px;
-  padding-bottom: 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
 }
 
 .sub-cat-card {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 16px 20px;
-  border-radius: 10px;
+  padding: 16px 18px;
+  border-radius: 12px;
   animation: card-in .35s ease both;
-  background: rgba(255, 255, 255, .02);
-  border: 1px solid rgba(255, 255, 255, .04);
+  background: rgba(255, 255, 255, .025);
+  border: 1px solid var(--border);
   cursor: pointer;
   transition: all .2s;
 
   &:hover {
-    background: rgba(255, 255, 255, .04);
-    border-color: rgba(66, 184, 131, .12);
-    transform: translateX(4px);
+    background: rgba(139, 92, 246, .05);
+    border-color: rgba(139, 92, 246, .28);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .22);
+
+    .sub-cat-arrow { color: var(--accent); transform: translateX(3px); }
   }
 }
 
@@ -295,12 +378,12 @@ onMounted(init)
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: rgba(66, 184, 131, .08);
+  background: rgba(139, 92, 246, .08);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #42b883;
+  color: #8b5cf6;
 }
 
 .sub-cat-info {
@@ -328,18 +411,18 @@ onMounted(init)
 .sub-cat-arrow {
   flex-shrink: 0;
   color: rgba(255, 255, 255, .2);
+  transition: all .2s;
 }
 
 // ── Articles List ──
 .articles-section {
-  padding-top: 40px;
+  padding-top: 48px;
 }
 
-.section-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 20px;
+.articles-total {
+  font-size: 12px;
+  color: rgba(255, 255, 255, .35);
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .articles-list {
@@ -353,18 +436,30 @@ onMounted(init)
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   animation: card-in .35s ease both;
   background: rgba(255, 255, 255, .02);
-  border: 1px solid rgba(255, 255, 255, .04);
+  border: 1px solid var(--border);
   cursor: pointer;
   transition: all .2s;
 
   &:hover {
-    background: rgba(255, 255, 255, .04);
-    border-color: rgba(66, 184, 131, .1);
+    background: rgba(255, 255, 255, .045);
+    border-color: rgba(139, 92, 246, .24);
     transform: translateX(4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+
+    .row-arrow { color: var(--accent); transform: translateX(3px); }
   }
+}
+
+.row-index {
+  flex-shrink: 0;
+  width: 28px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: rgba(139, 92, 246, .35);
 }
 
 .row-body {
@@ -418,6 +513,7 @@ onMounted(init)
 .row-arrow {
   flex-shrink: 0;
   color: rgba(255, 255, 255, .15);
+  transition: all .2s;
 }
 
 // ── States ──
@@ -431,7 +527,7 @@ onMounted(init)
   width: 32px;
   height: 32px;
   border: 2px solid rgba(255, 255, 255, .06);
-  border-top-color: #42b883;
+  border-top-color: #8b5cf6;
   border-radius: 50%;
   animation: spin .6s linear infinite;
 }
@@ -456,13 +552,13 @@ onMounted(init)
     padding: 8px 20px;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, .1);
-    color: #42b883;
+    color: #8b5cf6;
     font-size: 13px;
     transition: all .15s;
 
     &:hover {
-      background: rgba(66, 184, 131, .08);
-      border-color: rgba(66, 184, 131, .2);
+      background: rgba(139, 92, 246, .08);
+      border-color: rgba(139, 92, 246, .2);
     }
   }
 }
@@ -497,10 +593,17 @@ onMounted(init)
     font-size: 14px;
   }
 
+  .sub-section {
+    padding-top: 24px;
+  }
+
   .sub-categories {
-    padding-top: 20px;
-    padding-bottom: 20px;
-    gap: 6px;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .row-index {
+    display: none;
   }
 
   .sub-cat-card {

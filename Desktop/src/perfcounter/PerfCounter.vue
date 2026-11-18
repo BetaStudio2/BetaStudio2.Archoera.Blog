@@ -184,7 +184,7 @@ const fpsColor = computed(() => {
 }
 
 /* FPS color classes */
-.perf-green { color: #34d399; }
+.perf-green { color: #a78bfa; }
 .perf-yellow { color: #fbbf24; }
 .perf-red { color: #f87171; }
 
@@ -198,7 +198,7 @@ const fpsColor = computed(() => {
 }
 .perf-bar {
   height: 100%;
-  background: linear-gradient(90deg, #34d399, #22d3ee);
+  background: linear-gradient(90deg, #a78bfa, #6366f1);
   border-radius: 2px;
   transition: width .3s ease;
 }

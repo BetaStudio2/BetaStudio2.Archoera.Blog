@@ -29,8 +29,15 @@ summary: >-
   七百兆的仓库里，99% 是历史验收记录；根目录的 AGENTS.md 只教 AI"怎么发"，不写"不能发什么"；
   登录用的是别人家的 OAuth Client ID；文档写支持 Linux，却连一个 Linux 包都没发布过。
   这不是能力问题，是没人负责。
-cover: null
-assets: []
+cover: assets/png/kamucl-cover.png
+assets:
+  - id: cover
+    type: image
+    format: png
+    path: assets/png/kamucl-cover.png
+    title: KAMUCL 社区资源页面
+    source: YUN-SAN3/KAMUCL 仓库（docs/validation-1.1.23），深色留白排版
+    caption: KAMUCL v1.1.23 的社区资源页面（Windows / 黑橙主题）
 key_facts:
   project: KAMUCL
   repo: YUN-SAN3/KAMUCL

@@ -72,6 +72,17 @@ function applyLang(meta, content, lang) {
   return { meta, content: content.slice(0, headIdx) + target }
 }
 
+/** 封面：优先 meta.cover，缺省时回退正文第一张图片资源 */
+function resolveCover(meta, relPath) {
+  const asset = Array.isArray(meta?.assets)
+    ? meta.assets.find(a => a && a.type === 'image' && a.path)
+    : null
+  const cover = meta?.cover || asset?.path
+  if (!cover) return null
+  if (/^https?:\/\//i.test(cover) || cover.startsWith('/')) return cover
+  return `${urlOf(`static/documents/${relPath}`)}/${cover.split('/').map(s => encodeURIComponent(s)).join('/')}`
+}
+
 /** 相对资源路径改写为静态文件地址 */
 function rewriteAssets(content, relPath) {
   const encodedBase = urlOf(`static/documents/${relPath}`)
@@ -294,9 +305,7 @@ function main() {
           type: 'document',
           title: current.title,
           description: meta.description || '',
-          cover: meta.cover
-            ? `${urlOf(`static/documents/${relPath}`)}/${meta.cover.split('/').map(s => encodeURIComponent(s)).join('/')}`
-            : null,
+          cover: resolveCover(meta, relPath),
           category: meta.category || '',
           tags: meta.tags || [],
           created: meta.created || '',

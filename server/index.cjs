@@ -223,13 +223,17 @@ function scanCategoryTree(dirPath, relativePath, lang) {
       try {
         const article = domt.readArticle(fullPath, lang)
         const meta = article ? (article.meta || {}) : {}
+        // 未显式设置 cover 时，回退到正文第一张图片资源（如 Forbric 的梗图）
+        const coverAsset = Array.isArray(meta.assets)
+          ? meta.assets.find(a => a && a.type === 'image' && a.path)
+          : null
         children.push({
           name: entry.name,
           path: relPath,
           type: 'document',
           title: meta.title || entry.name,
           description: meta.description || '',
-          cover: meta.cover || null,
+          cover: meta.cover || coverAsset?.path || null,
           category: meta.category || '',
           tags: meta.tags || [],
           created: meta.created || '',

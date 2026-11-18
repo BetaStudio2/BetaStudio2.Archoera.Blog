@@ -584,7 +584,7 @@ onUnmounted(() => {
     background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
   }
   &.icon-blog {
-    background: linear-gradient(135deg, #42b883 0%, #359a6a 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
   }
   &.icon-explorer {
     background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
@@ -938,7 +938,7 @@ onUnmounted(() => {
     background: linear-gradient(135deg,#667eea,#5568d3);
   }
   &.start-blog {
-    background: linear-gradient(135deg,#42b883,#359a6a);
+    background: linear-gradient(135deg,#6366f1,#4f46e5);
   }
   &.start-browser {
     background: linear-gradient(135deg,#fb923c,#ea580c);
