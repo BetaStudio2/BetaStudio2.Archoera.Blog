@@ -18,6 +18,8 @@ data/accounts/
 data/addons/database/
 data/games/
 data/documents/database/
+# 本地私密资料（含聊天原文、截图与个人信息），不进入仓库，也不参与构建
+data/private/
 *.db
 *.db-shm
 *.db-wal
